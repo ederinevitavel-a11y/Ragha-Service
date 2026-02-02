@@ -3,20 +3,28 @@ import { FormData } from '../types';
 
 /**
  * URL do seu Google Apps Script real.
- * Substitua pela URL gerada ao clicar em "Implantar" > "Nova Implantação" no Apps Script.
+ * Atualizado para a nova versão fornecida: ...XiNYaE8/exec
  */
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-Hon6g63GuYohrsH0HdD7_8Jt34IV7zDfCwUI5_UTi0iQwcxQeKQFNJ-ySyETlJN1/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9V95dWbdnuH-LxaQHEsvmyvjQTK05gLVXFNQcUmaSlE3NwJmxJmOtk9p4xXiNYaE8/exec';
 
 /**
- * Envia os dados para o Google Sheets seguindo a ordem configurada no Script do Google.
- * Ordem esperada na planilha conforme última atualização:
- * A: Data/Hora | B: Quest | C: Level | D: Vocação | E: Pagamento | F: Local | G: Nome RL | H: Telefone | J: Char Name
+ * Envia os dados para o Google Sheets.
+ * Ordem esperada na planilha (Conforme sua solicitação):
+ * A: Data/Hora
+ * B: Quest
+ * C: Level
+ * D: Vocação
+ * E: Pagamento
+ * F: Local
+ * G: Nome RL
+ * H: Telefone
+ * I: (Vazio)
+ * J: Nome do Char
  */
 export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => {
-  console.log('Ragha Service: Enviando requisição para processamento em planilha...', data);
+  console.log('Ragha Service: Enviando dados para a planilha...', data);
 
   try {
-    // Usamos no-cors para evitar erros de redirecionamento do Google Apps Script
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
@@ -27,10 +35,10 @@ export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => 
       body: JSON.stringify(data),
     });
 
-    // Se o fetch não lançar erro, assumimos sucesso no envio dos dados
+    // Como o modo 'no-cors' não permite ler a resposta, assumimos sucesso se não houver erro de rede.
     return true;
   } catch (error) {
-    console.error('Ragha Service Error: Falha ao conectar com o servidor do Google Sheets:', error);
+    console.error('Ragha Service Error:', error);
     return false;
   }
 };
