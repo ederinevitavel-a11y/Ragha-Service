@@ -3,18 +3,20 @@ import { FormData } from '../types';
 
 /**
  * URL do seu Google Apps Script real.
- * Os dados enviados aqui serão processados pela função doPost() na sua planilha.
+ * Substitua pela URL gerada ao clicar em "Implantar" > "Nova Implantação" no Apps Script.
  */
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzezcBP-W9EZZGkmR7bCTuw372HUQRXlm9l0B0W22bsRacL1ZOKbsL9fPXZUOItP454/exec';
 
+/**
+ * Envia os dados para o Google Sheets seguindo a ordem configurada no Script do Google.
+ * Ordem esperada na planilha:
+ * A: Timestamp | B: Quest | C: Level | D: Vocação | E: Pagamento | F: Local | G: Nome RL | H: Telefone | I: Vazio | J: Char Name
+ */
 export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => {
-  console.log('Iniciando submissão real para Ragha Service API...', data);
+  console.log('Ragha Service: Enviando requisição para processamento em planilha...', data);
 
   try {
-    /**
-     * Usamos mode: 'no-cors' porque o Google Apps Script redireciona a requisição.
-     * Isso permite que os dados cheguem à planilha sem erros de política de segurança (CORS) no navegador.
-     */
+    // Usamos no-cors para evitar erros de redirecionamento do Google Apps Script
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
@@ -25,13 +27,10 @@ export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => 
       body: JSON.stringify(data),
     });
 
-    /**
-     * Em modo 'no-cors', o navegador não nos deixa ler a resposta por segurança, 
-     * mas se o fetch não disparar um erro (catch), significa que o pacote foi enviado.
-     */
+    // Se o fetch não lançar erro, assumimos sucesso no envio dos dados
     return true;
   } catch (error) {
-    console.error('Erro ao conectar com o Google Script:', error);
+    console.error('Ragha Service Error: Falha ao conectar com o servidor do Google Sheets:', error);
     return false;
   }
 };

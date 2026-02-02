@@ -1,8 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import { Home, Shield, Swords, Coins, Map as MapIcon, User, Phone, Zap, Star, Menu, X, CheckCircle2, Database } from 'lucide-react';
+import { Shield, Swords, Zap, Database } from 'lucide-react';
 import HomeView from './components/HomeView';
 import RegistrationForm from './components/RegistrationForm';
+import AboutView from './components/AboutView';
+import TeamView from './components/TeamView';
 import { AppTab } from './types';
 
 const App: React.FC = () => {
@@ -35,7 +37,7 @@ const App: React.FC = () => {
           >
             <div className="w-10 h-10 bg-gradient-to-br from-[#00f2ff] to-[#bc13fe] rounded-lg flex items-center justify-center p-0.5 shadow-lg group-hover:scale-110 transition-transform">
               <div className="w-full h-full bg-[#050505] rounded-[6px] flex items-center justify-center">
-                <Zap className="w-6 h-6 text-[#00f2ff]" />
+                < Zap className="w-6 h-6 text-[#00f2ff]" />
               </div>
             </div>
             <span className="font-gamer text-xl tracking-tighter text-white group-hover:neon-glow-blue transition-all">
@@ -43,7 +45,7 @@ const App: React.FC = () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8 md:gap-12">
             <button 
               onClick={() => setActiveTab('HOME')}
               className={`font-gamer text-sm tracking-widest uppercase transition-all ${activeTab === 'HOME' ? 'text-[#00f2ff] neon-glow-blue' : 'text-gray-400 hover:text-white'}`}
@@ -51,10 +53,10 @@ const App: React.FC = () => {
               Home
             </button>
             <button 
-              onClick={() => setActiveTab('FORM')}
-              className={`px-6 py-2 rounded-full font-gamer text-sm tracking-widest uppercase border transition-all ${activeTab === 'FORM' ? 'bg-[#bc13fe] border-transparent text-white shadow-[0_0_20px_rgba(188,19,254,0.4)]' : 'border-gray-700 text-gray-400 hover:border-[#00f2ff] hover:text-[#00f2ff]'}`}
+              onClick={() => setActiveTab('TEAM')}
+              className={`font-gamer text-sm tracking-widest uppercase transition-all ${activeTab === 'TEAM' ? 'text-[#bc13fe] neon-glow-purple' : 'text-gray-400 hover:text-white'}`}
             >
-              Requisitar Quest
+              NOSSO TIME
             </button>
           </div>
         </div>
@@ -62,11 +64,10 @@ const App: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-grow relative z-10 pt-24 pb-20">
-        {activeTab === 'HOME' ? (
-          <HomeView onStart={() => setActiveTab('FORM')} />
-        ) : (
-          <RegistrationForm onBack={() => setActiveTab('HOME')} />
-        )}
+        {activeTab === 'HOME' && <HomeView onStart={() => setActiveTab('FORM')} onAbout={() => setActiveTab('ABOUT')} />}
+        {activeTab === 'FORM' && <RegistrationForm onBack={() => setActiveTab('HOME')} />}
+        {activeTab === 'ABOUT' && <AboutView onBack={() => setActiveTab('HOME')} />}
+        {activeTab === 'TEAM' && <TeamView onBack={() => setActiveTab('HOME')} />}
       </main>
 
       {/* Footer */}
@@ -83,7 +84,7 @@ const App: React.FC = () => {
             </div>
 
             <p className="text-gray-500 text-sm font-gamer tracking-widest uppercase">
-              &copy; 2024 Ragha Service. All rights reserved.
+              @2026 MJR ALL RIGHTS RESERVED
             </p>
 
             <div className="flex justify-center gap-4">

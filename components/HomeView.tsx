@@ -1,12 +1,13 @@
 
 import React from 'react';
-import { ArrowRight, Swords, Sparkles, Wand2, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Sparkles, Wand2, ShieldCheck } from 'lucide-react';
 
 interface HomeViewProps {
   onStart: () => void;
+  onAbout: () => void;
 }
 
-const HomeView: React.FC<HomeViewProps> = ({ onStart }) => {
+const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col lg:flex-row items-center gap-12 py-10">
@@ -52,11 +53,14 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart }) => {
             >
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
               <span className="relative z-10 flex items-center gap-2">
-                Iniciar Requisição <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                REQUISITAR QUEST <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </span>
             </button>
-            <button className="px-8 py-4 border border-gray-700 text-white font-gamer tracking-widest uppercase rounded-lg hover:border-[#bc13fe] hover:text-[#bc13fe] transition-all">
-              Saiba Mais
+            <button 
+              onClick={onAbout}
+              className="px-8 py-4 border border-gray-700 text-white font-gamer tracking-widest uppercase rounded-lg hover:border-[#bc13fe] hover:text-[#bc13fe] transition-all"
+            >
+              SAIBA MAIS
             </button>
           </div>
         </div>
@@ -64,29 +68,21 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart }) => {
         {/* Wizard Image / Visual Section */}
         <div className="flex-1 relative flex justify-center lg:justify-end animate-[slideIn_1s_ease-out]">
           <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,242,255,0.2)] group">
-            {/* Background Glow */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#00f2ff]/20 to-transparent z-10"></div>
-            
-            {/* The Image from user prompt description */}
             <img 
               src="https://picsum.photos/seed/ragha-wizard/800/800" 
               alt="Ragha Service Wizard" 
               className="w-full h-full object-cover grayscale-[0.2] group-hover:scale-110 transition-transform duration-700"
             />
-
-            {/* Floating UI Elements */}
             <div className="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md border border-[#00f2ff]/30 p-3 rounded-xl animate-bounce">
               <ShieldCheck className="w-8 h-8 text-[#00f2ff]" />
             </div>
-            
             <div className="absolute bottom-4 right-4 z-20 bg-black/60 backdrop-blur-md border border-[#bc13fe]/30 p-4 rounded-xl text-right">
               <div className="text-[#bc13fe] text-xs font-gamer tracking-tighter">SERVER STATUS</div>
               <div className="text-white font-bold flex items-center gap-2">
                 ONLINE <div className="w-2 h-2 rounded-full bg-[#39ff14] animate-pulse"></div>
               </div>
             </div>
-
-            {/* Corner Details */}
             <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#00f2ff]"></div>
             <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#bc13fe]"></div>
           </div>
