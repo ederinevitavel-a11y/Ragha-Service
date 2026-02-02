@@ -5,7 +5,7 @@ import { FormData } from '../types';
  * URL do seu Google Apps Script real.
  * Substitua pela URL gerada ao clicar em "Implantar" > "Nova Implantação" no Apps Script.
  */
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5qjSoHNAzyj7IRxgc3sOu2PkTBshgoJwXu4zgypArcIZ70yuDKnhIZ571sGhOpCXH/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-Hon6g63GuYohrsH0HdD7_8Jt34IV7zDfCwUI5_UTi0iQwcxQeKQFNJ-ySyETlJN1/exec';
 
 /**
  * Envia os dados para o Google Sheets seguindo a ordem configurada no Script do Google.
