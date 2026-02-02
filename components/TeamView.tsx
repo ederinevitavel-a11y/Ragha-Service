@@ -15,7 +15,7 @@ const TeamView: React.FC<TeamViewProps> = ({ onBack }) => {
       world: "Kalibra",
       guild: "Líder da MissClick",
       bio: "Ragha Healer é um dos jogadores de alto nível mais reconhecidos no Tibia, com forte presença em quests épicas como Soul War, Rotten Blood e Primal Ordeal. Possui mais de 50 títulos desbloqueados, incluindo Jack of all Taints.",
-      specialties: ["Elder Druid", "Exalted Monk", "Master Sorcerer"],
+      specialties: ["Elder Druid", "Exalted Monk"],
       color: "#00f2ff",
       twitchUrl: "https://www.twitch.tv/ragha_healer",
       dynamicShape: "hexagon"
@@ -26,7 +26,7 @@ const TeamView: React.FC<TeamViewProps> = ({ onBack }) => {
       level: "1785",
       world: "Kalibra",
       guild: "MissClick",
-      bio: "Donzs é um jogador veterano e consolidado no Tibia, reconhecido como parte da elite. Fez parte do primeiro time de Kalibra a concluir a Rotten Blood Quest em 2023.",
+      bio: "Donzs é um jogador veterano e consolidado no Tibia, com forte presença no servidor Kalibra, vocação Elder Druid e um perfil marcado por conquistas. É reconhecido como parte da elite de jogadores que exploram quests e hunts de alto nível. Fez parte do primeiro time de kalibra a concluir a Rotten Blood Quest em 2023.",
       specialties: ["Elder Druid", "Master Sorcerer", "Elite Knight", "Royal Paladin"],
       color: "#bc13fe",
       twitchUrl: "https://www.twitch.tv/donnsz",
@@ -39,10 +39,58 @@ const TeamView: React.FC<TeamViewProps> = ({ onBack }) => {
       world: "Kalibra",
       guild: "MissClick",
       bio: "Hezzorsz se posiciona como um dos Royal Paladins mais fortes de Kalibra. Presença constante em conteúdos avançados como Soul War, Rotten Blood e hunts em áreas de alto risco.",
-      specialties: ["Royal Paladin"],
+      specialties: ["Royal Paladin", "Elite Knight", "Elder Druid"],
       color: "#39ff14",
       twitchUrl: "https://www.twitch.tv/marcozs",
       dynamicShape: "circles"
+    },
+    {
+      name: "Donnsz",
+      vocation: "Elder Druid",
+      level: "1372",
+      world: "Kalibra",
+      guild: "MissClick",
+      bio: "Donnsz especialista na vocação Elder Druids, comum em conteúdos avançados como Soul War, Rotten Blood e hunts em áreas de alto risco",
+      specialties: ["Elder Druid", "Master Sorcerer"],
+      color: "#a855f7",
+      twitchUrl: "https://www.twitch.tv/donnsz",
+      dynamicShape: "circles"
+    },
+    {
+      name: "Pugzs",
+      vocation: "Royal Paladin",
+      level: "1046",
+      world: "Kalibra",
+      guild: "MissClick",
+      bio: "Pugzs é um jogador virtuoso, jogou por muito tempo como Master Sorcerer e agora está com um Royal Paladin",
+      specialties: ["Royal Paladin", "Master Sorcerer", "Elder Druid", "Exalted Monk"],
+      color: "#fbbf24",
+      twitchUrl: "https://www.twitch.tv/",
+      dynamicShape: "particles"
+    },
+    {
+      name: "Damnification",
+      vocation: "Master Sorcerer",
+      level: "879",
+      world: "Kalibra",
+      guild: "MissClick",
+      bio: "Damnification especialista na vocação Master Sorcerer, atualmente está fazendo hunts em The Roost of the Graveborn Quest",
+      specialties: ["Elder Druid", "Master Sorcerer"],
+      color: "#ff4d4d",
+      twitchUrl: "https://www.twitch.tv/",
+      dynamicShape: "hexagon"
+    },
+    {
+      name: "Eder",
+      vocation: "Master Sorcerer",
+      level: "1503",
+      world: "Kalibra",
+      guild: "MissClick",
+      bio: "Eder responsável pela gestão operacional e pelo desenvolvimento estratégico da marca, garantindo eficiência nos processos e fortalecimento da identidade corporativa.",
+      specialties: ["Master Sorcerer"],
+      color: "#ff4d4d",
+      twitchUrl: "https://www.twitch.tv/",
+      dynamicShape: "particles"
     }
   ];
 
@@ -124,7 +172,7 @@ const TeamView: React.FC<TeamViewProps> = ({ onBack }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {team.map((member, idx) => (
           <div 
             key={idx} 
@@ -222,7 +270,7 @@ const TeamView: React.FC<TeamViewProps> = ({ onBack }) => {
         <Users className="w-12 h-12 text-[#bc13fe] mx-auto mb-6" />
         <h4 className="text-3xl font-gamer font-black text-white uppercase tracking-tighter mb-4">Elite de Kalibra</h4>
         <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed">
-          Nosso time é composto por jogadores que definiram o meta do servidor Kalibra. Com recordes mundiais e primeiras conclusões de quests lendárias, garantimos a segurança e o sucesso absoluto do seu boneco.
+          Nosso time é composto por jogadores experientes, garantimos segurança e sucesso absoluto na finalização do seu service.
         </p>
       </div>
     </div>

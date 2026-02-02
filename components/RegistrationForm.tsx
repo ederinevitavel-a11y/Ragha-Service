@@ -223,13 +223,17 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
         </div>
 
         {isSuccess ? (
-          <div className="max-w-2xl mx-auto text-center py-20 animate-[fadeIn_0.5s_ease-out]">
+          <div className="max-w-3xl mx-auto text-center py-20 animate-[fadeIn_0.5s_ease-out]">
             <div className="inline-block p-8 rounded-full mb-10 border-2 shadow-2xl transition-all duration-700"
               style={{ backgroundColor: `${currentTheme.color}22`, borderColor: `${currentTheme.color}88`, boxShadow: `0 0 40px ${currentTheme.color}33` }}>
               <CheckCircle2 className="w-20 h-20" style={{ color: currentTheme.color }} />
             </div>
-            <h2 className="text-4xl font-gamer font-black text-white mb-8 uppercase tracking-tighter">MISSÃO <span style={{ color: currentTheme.color }}>CONFIRMADA!</span></h2>
-            <button onClick={onBack} className="px-10 py-4 bg-white/5 border border-gray-700 text-white font-gamer rounded-xl mx-auto flex items-center gap-2 hover:border-white transition-all backdrop-blur-sm">
+            <h2 className="text-3xl md:text-5xl font-gamer font-black text-white mb-8 uppercase tracking-tighter leading-tight">
+              MISSÃO <span style={{ color: currentTheme.color }}>CONFIRMADA,</span>
+              <br />
+              <span className="text-lg md:text-2xl opacity-80 block mt-4">EM BREVE ENTRAREMOS EM CONTATO!</span>
+            </h2>
+            <button onClick={onBack} className="px-10 py-4 bg-white/5 border border-gray-700 text-white font-gamer rounded-xl mx-auto flex items-center gap-2 hover:border-white transition-all backdrop-blur-sm mt-8">
               <ChevronLeft className="w-5 h-5" /> Voltar ao Início
             </button>
           </div>
