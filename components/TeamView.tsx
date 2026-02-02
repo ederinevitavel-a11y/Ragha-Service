@@ -86,11 +86,12 @@ const TeamView: React.FC<TeamViewProps> = ({ onBack }) => {
       level: "1503",
       world: "Kalibra",
       guild: "MissClick",
-      bio: "Eder responsável pela gestão operacional e pelo desenvolvimento estratégico da marca, garantindo eficiência nos processos e fortalecimento da identidade corporativa.",
-      specialties: ["Master Sorcerer"],
+      bio: "Eder é o responsável administrativo, focado na gestão operacional e no desenvolvimento estratégico da marca, garantindo eficiência nos processos e fortalecimento da identidade corporativa.",
+      specialties: ["Administrativo", "Master Sorcerer"],
       color: "#ff4d4d",
       twitchUrl: "https://www.twitch.tv/",
-      dynamicShape: "particles"
+      dynamicShape: "particles",
+      roleTag: "Administrativo"
     }
   ];
 
@@ -106,12 +107,14 @@ const TeamView: React.FC<TeamViewProps> = ({ onBack }) => {
         return { color: "#94a3b8", bg: "rgba(148, 163, 184, 0.1)", border: "rgba(148, 163, 184, 0.3)" };
       case "Royal Paladin":
         return { color: "#fbbf24", bg: "rgba(251, 191, 36, 0.1)", border: "rgba(251, 191, 36, 0.3)" };
+      case "Administrativo":
+        return { color: "#ffffff", bg: "rgba(255, 255, 255, 0.1)", border: "rgba(255, 255, 255, 0.4)" };
       default:
         return { color: "#94a3b8", bg: "rgba(255, 255, 255, 0.05)", border: "rgba(255, 255, 255, 0.1)" };
     }
   };
 
-  const renderAvatar = (member: typeof team[0]) => {
+  const renderAvatar = (member: any) => {
     return (
       <div className="h-64 relative overflow-hidden bg-[#050505] flex items-center justify-center">
         {/* Background Dynamics */}
@@ -147,14 +150,21 @@ const TeamView: React.FC<TeamViewProps> = ({ onBack }) => {
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] via-transparent to-transparent z-20"></div>
         
-        {/* Name & World */}
-        <div className="absolute bottom-4 left-6 z-30">
-          <h3 className="text-2xl font-gamer font-black text-white uppercase tracking-tighter drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]" style={{ color: member.color }}>
-            {member.name}
-          </h3>
-          <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
-            <Globe className="w-3 h-3" /> {member.world}
+        {/* Name & World & Optional Tag */}
+        <div className="absolute bottom-4 left-6 z-30 flex items-center gap-3">
+          <div>
+            <h3 className="text-2xl font-gamer font-black text-white uppercase tracking-tighter drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]" style={{ color: member.color }}>
+              {member.name}
+            </h3>
+            <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
+              <Globe className="w-3 h-3" /> {member.world}
+            </div>
           </div>
+          {member.roleTag && (
+            <div className="px-3 py-1 border border-white/40 rounded-lg bg-black/60 backdrop-blur-sm text-[9px] font-gamer text-white uppercase tracking-widest self-center shadow-[0_0_15px_rgba(255,255,255,0.1)] mb-1">
+              {member.roleTag}
+            </div>
+          )}
         </div>
       </div>
     );
