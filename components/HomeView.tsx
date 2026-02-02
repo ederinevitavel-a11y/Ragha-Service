@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Sparkles, Wand2, ShieldCheck, Snowflake } from 'lucide-react';
+import { ArrowRight, Sparkles, ShieldCheck, Snowflake, Zap, Cpu, Wand2 } from 'lucide-react';
 
 interface HomeViewProps {
   onStart: () => void;
@@ -14,8 +14,8 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
         {/* Text Section */}
         <div className="flex-1 text-center lg:text-left space-y-8 animate-[fadeIn_0.8s_ease-out]">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#00f2ff] text-xs font-gamer tracking-widest uppercase">
-            <Sparkles className="w-3 h-3" />
-            Premium Services Quest
+            <Cpu className="w-3 h-3" />
+            Thermal Protocol v4.0
           </div>
           
           <h1 className="text-5xl md:text-7xl font-gamer font-black leading-tight">
@@ -27,7 +27,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
 
           <div className="bg-[#0a0a0c] border-l-4 border-[#00f2ff] p-6 rounded-r-xl shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Wand2 className="w-16 h-16 text-[#00f2ff]" />
+              <Zap className="w-16 h-16 text-[#00f2ff]" />
             </div>
             <p className="text-xl md:text-2xl text-gray-300 leading-relaxed font-light">
               Realizamos as quests <span className="text-white font-bold">Soul War</span>, 
@@ -65,51 +65,58 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
           </div>
         </div>
 
-        {/* Universe & Ice Text Section */}
+        {/* Reference Image Visualization */}
         <div className="flex-1 relative flex justify-center lg:justify-end animate-[slideIn_1s_ease-out]">
-          <div className="relative w-full max-w-lg aspect-square rounded-[3rem] overflow-hidden shadow-[0_0_80px_rgba(0,242,255,0.2)] group bg-black border border-white/10">
-            {/* Universe Background */}
+          <div className="relative w-full max-w-lg aspect-square rounded-[3rem] overflow-hidden shadow-[0_0_80px_rgba(0,242,255,0.3)] group bg-black border border-white/10">
+            {/* Galaxy/Space Background */}
             <img 
               src="https://images.unsplash.com/photo-1464802686167-b939a6910659?auto=format&fit=crop&q=80&w=1200" 
-              alt="Universe Background" 
-              className="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-[10s] group-hover:scale-110"
+              alt="Space Galaxy Background" 
+              className="absolute inset-0 w-full h-full object-cover opacity-80 transition-transform duration-[25s] group-hover:scale-110 brightness-75"
             />
             
-            {/* Frozen Overlays */}
-            <div className="absolute inset-0 z-10 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
-            <div className="absolute inset-0 z-10 bg-radial-gradient from-transparent to-[#00f2ff]/5"></div>
-
-            {/* Ice Stylized Text */}
-            <div className="relative z-20 w-full h-full flex flex-col items-center justify-center p-8 text-center">
-              <div className="mb-4 animate-pulse">
-                <Snowflake className="w-12 h-12 text-[#a5f3fc] drop-shadow-[0_0_10px_#fff]" />
+            {/* HUD Overlays */}
+            <div className="absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(0,0,0,0.6)_100%)]"></div>
+            
+            {/* Centered Snowflake Icon */}
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center">
+              <div className="mb-3 opacity-70 scale-90">
+                <Snowflake className="w-12 h-12 text-[#a5f3fc] drop-shadow-[0_0_12px_#00f2ff]" />
               </div>
-              <h2 className="ice-glow font-gamer text-5xl md:text-6xl font-black uppercase leading-none drop-shadow-2xl">
-                RAGHA<br />
-                <span className="text-4xl md:text-5xl">SERVICE</span>
-              </h2>
-              <div className="mt-6 flex gap-2">
-                <div className="h-1 w-12 bg-white/20 rounded-full"></div>
-                <div className="h-1 w-12 bg-[#00f2ff] rounded-full"></div>
-                <div className="h-1 w-12 bg-white/20 rounded-full"></div>
+              
+              {/* RAGHA SERVICE Title Block (Reduced size) */}
+              <div className="flex flex-col items-center">
+                <h2 className="ice-glow font-gamer text-5xl md:text-[4.2rem] font-black uppercase leading-[0.85] tracking-tighter drop-shadow-[0_8px_25px_rgba(0,0,0,1)]">
+                  RAGHA
+                </h2>
+                <h2 className="font-gamer text-3xl md:text-[2.6rem] font-black uppercase leading-[1.1] tracking-[0.15em] text-[#00f2ff] drop-shadow-[0_4px_12px_rgba(0,242,255,0.4)]">
+                  SERVICE
+                </h2>
               </div>
-            </div>
 
-            {/* Floating UI Elements */}
-            <div className="absolute top-8 left-8 z-30 bg-white/5 backdrop-blur-xl border border-white/20 p-4 rounded-2xl shadow-2xl animate-bounce">
-              <ShieldCheck className="w-10 h-10 text-[#00f2ff] drop-shadow-[0_0_8px_#00f2ff]" />
-            </div>
-
-            <div className="absolute bottom-8 right-8 z-30 bg-black/80 backdrop-blur-2xl border border-white/10 p-5 rounded-2xl text-right">
-              <div className="text-white/40 text-[9px] font-gamer tracking-[0.2em] mb-1 uppercase">Thermal Protocol</div>
-              <div className="text-[#a5f3fc] font-gamer font-black text-sm flex items-center justify-end gap-3">
-                FROZEN <div className="w-2.5 h-2.5 rounded-full bg-[#00f2ff] shadow-[0_0_10px_#00f2ff] animate-pulse"></div>
+              <div className="mt-6 flex gap-3 opacity-60">
+                <div className="h-1 w-8 bg-white/30 rounded-full"></div>
+                <div className="h-1 w-14 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></div>
+                <div className="h-1 w-8 bg-white/30 rounded-full"></div>
               </div>
             </div>
 
-            {/* Corner Decorative Borders (Icy Style) */}
-            <div className="absolute top-0 left-0 w-24 h-24 border-t-4 border-l-4 border-white/40 rounded-tl-[3rem]"></div>
-            <div className="absolute bottom-0 right-0 w-24 h-24 border-b-4 border-r-4 border-[#00f2ff] rounded-br-[3rem]"></div>
+            {/* Top Left Shield Icon */}
+            <div className="absolute top-8 left-8 z-30 bg-black/40 backdrop-blur-md border border-white/10 p-3.5 rounded-2xl shadow-[0_0_20px_rgba(0,242,255,0.15)]">
+              <ShieldCheck className="w-8 h-8 text-[#00f2ff] drop-shadow-[0_0_10px_#00f2ff]" />
+            </div>
+
+            {/* Bottom Right Protocol Label */}
+            <div className="absolute bottom-8 right-8 z-30 bg-black/90 backdrop-blur-2xl border border-white/10 p-5 rounded-[2rem] text-right min-w-[210px] shadow-2xl">
+              <div className="text-white/40 text-[9px] font-gamer tracking-[0.25em] mb-1.5 uppercase">Thermal Protocol</div>
+              <div className="text-[#a5f3fc] font-gamer font-black text-lg flex items-center justify-end gap-3 tracking-widest">
+                FROZEN <div className="w-3 h-3 rounded-full bg-[#00f2ff] shadow-[0_0_15px_#00f2ff] animate-pulse"></div>
+              </div>
+            </div>
+
+            {/* Decorative Borders */}
+            <div className="absolute top-0 left-0 w-28 h-28 border-t-2 border-l-2 border-white/10 rounded-tl-[3rem]"></div>
+            <div className="absolute bottom-0 right-0 w-28 h-28 border-b-4 border-r-4 border-[#00f2ff]/40 rounded-br-[3rem]"></div>
           </div>
         </div>
       </div>
@@ -117,15 +124,18 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
       {/* Stats Section */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-16">
         {[
-          { label: 'Quests Concluídas', value: '1.2k+', color: 'text-[#00f2ff]' },
-          { label: 'Satisfação', value: '100%', color: 'text-[#ffffff]' },
-          { label: 'Time de Service', value: '15+', color: 'text-[#39ff14]' },
-          { label: 'Anos de Experiência', value: '4+', color: 'text-[#a5f3fc]' }
+          { label: 'Quests Concluídas', value: '1.2k+', color: 'text-[#00f2ff]', icon: <Zap className="w-3 h-3 mb-1 opacity-50" /> },
+          { label: 'Satisfação', value: '100%', color: 'text-[#ffffff]', icon: <Sparkles className="w-3 h-3 mb-1 opacity-50" /> },
+          { label: 'Time de Service', value: '15+', color: 'text-[#39ff14]', icon: <ShieldCheck className="w-3 h-3 mb-1 opacity-50" /> },
+          { label: 'Anos de Experiência', value: '4+', color: 'text-[#a5f3fc]', icon: <Wand2 className="w-3 h-3 mb-1 opacity-50" /> }
         ].map((stat, idx) => (
           <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:bg-white/[0.07] transition-all hover:scale-105 group relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className={`text-3xl font-gamer font-bold ${stat.color} mb-1 relative z-10`}>{stat.value}</div>
-            <div className="text-[10px] text-gray-400 uppercase tracking-[0.2em] relative z-10 font-medium">{stat.label}</div>
+            <div className="flex flex-col items-center">
+              {stat.icon}
+              <div className={`text-3xl font-gamer font-bold ${stat.color} mb-1 relative z-10`}>{stat.value}</div>
+              <div className="text-[10px] text-gray-400 uppercase tracking-[0.2em] relative z-10 font-medium">{stat.label}</div>
+            </div>
           </div>
         ))}
       </div>

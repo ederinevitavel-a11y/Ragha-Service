@@ -247,7 +247,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
                     <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${isQuestMenuOpen ? 'rotate-180' : ''}`} />
                   </div>
                   {isQuestMenuOpen && (
-                    <div className="absolute left-0 right-0 top-[115%] z-[60] bg-[#0a0a0c]/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.9)] overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+                    <div className="absolute left-0 right-0 top-[115%] z-[60] bg-[#0a0a0c]/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.9)] animate-[fadeIn_0.2s_ease-out]">
                       {Object.values(Quest).map(q => {
                         const questTheme = themes[q];
                         return (
