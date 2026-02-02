@@ -5,12 +5,12 @@ import { FormData } from '../types';
  * URL do seu Google Apps Script real.
  * Substitua pela URL gerada ao clicar em "Implantar" > "Nova Implantação" no Apps Script.
  */
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzezcBP-W9EZZGkmR7bCTuw372HUQRXlm9l0B0W22bsRacL1ZOKbsL9fPXZUOItP454/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5qjSoHNAzyj7IRxgc3sOu2PkTBshgoJwXu4zgypArcIZ70yuDKnhIZ571sGhOpCXH/exec';
 
 /**
  * Envia os dados para o Google Sheets seguindo a ordem configurada no Script do Google.
- * Ordem esperada na planilha:
- * A: Timestamp | B: Quest | C: Level | D: Vocação | E: Pagamento | F: Local | G: Nome RL | H: Telefone | I: Vazio | J: Char Name
+ * Ordem esperada na planilha conforme última atualização:
+ * A: Data/Hora | B: Quest | C: Level | D: Vocação | E: Pagamento | F: Local | G: Nome RL | H: Telefone | J: Char Name
  */
 export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => {
   console.log('Ragha Service: Enviando requisição para processamento em planilha...', data);

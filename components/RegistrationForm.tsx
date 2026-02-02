@@ -76,7 +76,7 @@ const locationIcons: Record<string, string> = {
   [ServiceLocation.OTHER]: '🪐'
 };
 
-// Dados detalhados para o Popup (Baseado nos prints do usuário)
+// Dados detalhados para o Popup
 const questInfo: Record<string, { requirements: string[], vocations: string[], rewards: string[], note?: string }> = {
   [Quest.ROTTEN_BLOOD]: {
     requirements: [
@@ -270,7 +270,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
-            {/* Custom Quest Dropdown */}
+            {/* 1. QUAL QUEST GOSTARIA DE FAZER? (B) */}
             <div className={`relative ${isQuestMenuOpen ? 'z-50' : 'z-20'}`} ref={questDropdownRef}>
               <CompactCard icon={<Trophy />} label="QUAL QUEST GOSTARIA DE FAZER? *" color={currentTheme.color}>
                 <div 
@@ -302,7 +302,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
                            <span className="text-xl">{questIcons[q]}</span>
                            <span className={`text-sm font-bold ${formData.quest === q ? 'text-white' : 'text-gray-400'}`}>{q}</span>
 
-                           {/* POPUP INFORMATIVO DINÂMICO */}
                            {hoveredQuest === q && questInfo[q] && (
                              <div 
                                className="absolute left-[105%] top-0 w-[320px] bg-[#0d0d0f] border rounded-xl p-5 z-[100] animate-[fadeIn_0.2s_ease-out] hidden md:block backdrop-blur-xl"
@@ -366,7 +365,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
                                  </div>
                                </div>
 
-                               {/* Seta do popup */}
                                <div 
                                  className="absolute top-6 left-[-6px] w-3 h-3 bg-[#0d0d0f] border-l border-b rotate-45"
                                  style={{ borderColor: `${questTheme.color}44` }}
@@ -381,18 +379,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
               </CompactCard>
             </div>
 
+            {/* 2. LEVEL DO SEU CHAR (C) */}
             <div className="z-10">
-              <CompactCard icon={<User />} label="NOME DO PERSONAGEM" color={fieldColor || "#bc13fe"}>
-                <input 
-                  required type="text" name="charName" placeholder="Ex: Ragha Wizard"
-                  value={formData.charName} onChange={handleChange}
-                  className="w-full bg-transparent text-white focus:outline-none text-sm font-bold placeholder:text-gray-700"
-                />
-              </CompactCard>
-            </div>
-
-            <div className="z-10">
-              <CompactCard icon={<Zap />} label="LEVEL DO PERSONAGEM" color={fieldColor || "#39ff14"}>
+              <CompactCard icon={<Zap />} label="LEVEL DO SEU CHAR *" color={fieldColor || "#39ff14"}>
                 <input 
                   required type="text" name="charLevel" placeholder="Ex: 800"
                   value={formData.charLevel} onChange={handleChange}
@@ -401,8 +390,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
               </CompactCard>
             </div>
 
+            {/* 3. VOCAÇÃO DO SEU NOVO CHAR (D) */}
             <div className={`relative ${isVocationMenuOpen ? 'z-50' : 'z-20'}`} ref={vocationDropdownRef}>
-              <CompactCard icon={<Shield />} label="VOCAÇÃO" color={fieldColor || "#fbbf24"}>
+              <CompactCard icon={<Shield />} label="VOCAÇÃO DO SEU NOVO CHAR *" color={fieldColor || "#fbbf24"}>
                 <div 
                   onClick={() => setIsVocationMenuOpen(!isVocationMenuOpen)}
                   className="w-full flex items-center justify-between cursor-pointer py-1"
@@ -434,8 +424,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
               </CompactCard>
             </div>
 
+            {/* 4. FORMA DE PAGAMENTO (E) */}
             <div className={`relative ${isPaymentMenuOpen ? 'z-50' : 'z-20'}`} ref={paymentDropdownRef}>
-              <CompactCard icon={<Coins />} label="FORMA DE PAGAMENTO" color={fieldColor || "#00f2ff"}>
+              <CompactCard icon={<Coins />} label="FORMA DE PAGAMENTO *" color={fieldColor || "#00f2ff"}>
                 <div 
                   onClick={() => setIsPaymentMenuOpen(!isPaymentMenuOpen)}
                   className="w-full flex items-center justify-between cursor-pointer py-1"
@@ -467,8 +458,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
               </CompactCard>
             </div>
 
+            {/* 5. LOCAL DO SERVICE (F) */}
             <div className={`relative ${isLocationMenuOpen ? 'z-50' : 'z-20'}`} ref={locationDropdownRef}>
-              <CompactCard icon={<MapIcon />} label="LOCAL DO SERVICE" color={fieldColor || "#bc13fe"}>
+              <CompactCard icon={<MapIcon />} label="LOCAL DO SERVICE ?* *" color={fieldColor || "#bc13fe"}>
                 <div 
                   onClick={() => setIsLocationMenuOpen(!isLocationMenuOpen)}
                   className="w-full flex items-center justify-between cursor-pointer py-1"
@@ -500,8 +492,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
               </CompactCard>
             </div>
 
+            {/* 6. QUAL É O SEU NOME RL? (G) */}
             <div className="z-10">
-              <CompactCard icon={<Sparkles />} label="NOME RL" color={fieldColor || "#39ff14"}>
+              <CompactCard icon={<Sparkles />} label="QUAL É O SEU NOME RL ? *" color={fieldColor || "#39ff14"}>
                 <input 
                   required type="text" name="realLifeName" placeholder="Seu nome real"
                   value={formData.realLifeName} onChange={handleChange}
@@ -510,8 +503,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
               </CompactCard>
             </div>
 
+            {/* 7. TELEFONE DE CONTATO (H) */}
             <div className="z-10">
-              <CompactCard icon={<Phone />} label="TELEFONE DE CONTATO" color={fieldColor || "#ffffff"}>
+              <CompactCard icon={<Phone />} label="TELEFONE DE CONTATO ? *" color={fieldColor || "#ffffff"}>
                 <input 
                   required type="tel" name="phone" placeholder="Ex: 551199999-9999"
                   value={formData.phone} onChange={handleChange}
@@ -519,6 +513,18 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
                 />
               </CompactCard>
             </div>
+
+            {/* 8. NOME DO SEU CHAR (J) */}
+            <div className="z-10">
+              <CompactCard icon={<User />} label="NOME DO SEU CHAR *" color={fieldColor || "#bc13fe"}>
+                <input 
+                  required type="text" name="charName" placeholder="Ex: Ragha Wizard"
+                  value={formData.charName} onChange={handleChange}
+                  className="w-full bg-transparent text-white focus:outline-none text-sm font-bold placeholder:text-gray-700"
+                />
+              </CompactCard>
+            </div>
+
           </div>
 
           <button 
