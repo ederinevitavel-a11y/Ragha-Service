@@ -15,7 +15,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
         <div className="flex-1 text-center lg:text-left space-y-8 animate-[fadeIn_0.8s_ease-out]">
           <div className="inline-flex items-center gap-4 px-6 py-2.5 rounded-full bg-[#0a0a0c]/80 border border-white/10 text-[#00f2ff] text-[10px] font-gamer tracking-[0.3em] uppercase shadow-[0_0_30px_rgba(0,242,255,0.1)] group transition-all hover:border-[#00f2ff]/40 hover:bg-black/90">
             <Cpu className="w-4 h-4 text-[#00f2ff] drop-shadow-[0_0_8px_rgba(0,242,255,0.6)] animate-pulse" />
-            <span className="leading-none mt-0.5 font-bold">MYSTIC QUESTS SERVICE</span>
+            <span className="leading-none mt-0.5 font-bold">PREMIUM QUESTS SERVICE</span>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-gamer font-black leading-tight">
@@ -66,62 +66,94 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
           </div>
         </div>
 
-        {/* Brand Visualization (Frozen HUD Style) */}
-        <div className="flex-1 relative flex justify-center lg:justify-end animate-[slideIn_1s_ease-out]">
-          <div className="relative w-full max-w-lg aspect-[4/5] rounded-[3rem] overflow-hidden shadow-[0_0_80px_rgba(0,242,255,0.15)] group bg-[#050505] border border-white/10">
+        {/* Brand Visualization (PROCESSED CHIP Style) */}
+        <div className="flex-1 relative flex justify-center lg:justify-end animate-[slideIn_1s_ease-out] p-12">
+          
+          {/* THE CHIP COMPONENT */}
+          <div className="relative group p-4">
             
-            {/* Ice Texture Background (Fundo de Frio) */}
-            <div className="absolute inset-0 z-0">
-              <img 
-                src="https://images.unsplash.com/photo-1516900448138-898700243b4d?q=80&w=1200&auto=format&fit=crop" 
-                alt="Ice Texture" 
-                className="w-full h-full object-cover opacity-40 brightness-50 grayscale-[0.2] transition-transform duration-[30s] group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505] opacity-60"></div>
+            {/* CPU PINS (Conectores em volta do quadrado) */}
+            <div className="absolute -inset-2 pointer-events-none">
+              {/* Top Pins */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 flex gap-4 -translate-y-full">
+                {[...Array(6)].map((_, i) => (
+                  <div key={`tp-${i}`} className="w-2.5 h-6 bg-gradient-to-t from-[#00f2ff]/60 to-transparent border-t border-[#00f2ff] rounded-t-sm shadow-[0_0_10px_rgba(0,242,255,0.4)] animate-pulse" style={{ animationDelay: `${i * 0.15}s` }}></div>
+                ))}
+              </div>
+              {/* Bottom Pins */}
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-4 translate-y-full">
+                {[...Array(6)].map((_, i) => (
+                  <div key={`bp-${i}`} className="w-2.5 h-6 bg-gradient-to-b from-[#00f2ff]/60 to-transparent border-b border-[#00f2ff] rounded-b-sm shadow-[0_0_10px_rgba(0,242,255,0.4)] animate-pulse" style={{ animationDelay: `${i * 0.15}s` }}></div>
+                ))}
+              </div>
+              {/* Left Pins */}
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col gap-4 -translate-x-full">
+                {[...Array(6)].map((_, i) => (
+                  <div key={`lp-${i}`} className="h-2.5 w-6 bg-gradient-to-l from-[#00f2ff]/60 to-transparent border-l border-[#00f2ff] rounded-l-sm shadow-[0_0_10px_rgba(0,242,255,0.4)] animate-pulse" style={{ animationDelay: `${i * 0.15}s` }}></div>
+                ))}
+              </div>
+              {/* Right Pins */}
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-4 translate-x-full">
+                {[...Array(6)].map((_, i) => (
+                  <div key={`rp-${i}`} className="h-2.5 w-6 bg-gradient-to-r from-[#00f2ff]/60 to-transparent border-r border-[#00f2ff] rounded-r-sm shadow-[0_0_10px_rgba(0,242,255,0.4)] animate-pulse" style={{ animationDelay: `${i * 0.15}s` }}></div>
+                ))}
+              </div>
             </div>
 
-            {/* Subtle Animated Grid Background */}
-            <div className="absolute inset-0 bg-grid-dots opacity-20 z-10"></div>
-            
-            {/* Glowing Focal Point (Ice Reference) */}
-            <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[#00f2ff] blur-[120px] opacity-10 animate-pulse z-10"></div>
-            
-            {/* HUD Overlay Elements */}
-            <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#050505] via-transparent to-[#050505]/40"></div>
-            
-            {/* HUD Centered Content */}
-            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-8 text-center">
-              {/* Ice/Snowflake Icon */}
-              <div className="mb-6 scale-125 relative">
-                <Snowflake className="w-16 h-16 text-[#00f2ff] drop-shadow-[0_0_20px_#00f2ff] animate-spin-slow" />
-                <div className="absolute inset-0 w-full h-full bg-[#00f2ff] blur-[20px] opacity-30 animate-pulse"></div>
-              </div>
+            {/* MAIN CHIP BODY (O Quadrado) */}
+            <div className="relative w-[340px] md:w-[380px] aspect-square rounded-2xl overflow-hidden bg-[#050505] border-[10px] border-[#0a0a0c] ring-1 ring-[#00f2ff]/40 shadow-[0_0_60px_rgba(0,242,255,0.2)] z-10 group-hover:scale-105 transition-all duration-500">
               
-              <div className="flex flex-col items-center">
-                <h2 className="ice-glow font-gamer text-5xl md:text-[4.5rem] font-black uppercase leading-[0.85] tracking-tighter drop-shadow-[0_8px_25px_rgba(0,0,0,1)]">
-                  RAGHA
-                </h2>
-                <h2 className="font-gamer text-3xl md:text-[2.8rem] font-black uppercase leading-[1.1] tracking-[0.15em] text-[#00f2ff] drop-shadow-[0_4px_12px_rgba(0,242,255,0.4)]">
-                  SERVICE
-                </h2>
+              {/* Background Integrated Visuals */}
+              <div className="absolute inset-0 z-0">
+                <img 
+                  src="https://images.unsplash.com/photo-1516900448138-898700243b4d?q=80&w=1200&auto=format&fit=crop" 
+                  alt="" 
+                  className="w-full h-full object-cover opacity-30 brightness-50 grayscale transition-transform duration-[20s] group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/40 via-[#0a0a0c]/80 to-[#050505]"></div>
               </div>
 
-              {/* HUD Progress bar dots */}
-              <div className="mt-10 flex gap-4 opacity-80">
-                <div className="h-1.5 w-10 bg-white/10 rounded-full"></div>
-                <div className="h-1.5 w-16 bg-[#00f2ff] rounded-full shadow-[0_0_15px_#00f2ff]"></div>
-                <div className="h-1.5 w-10 bg-white/10 rounded-full"></div>
+              {/* Digital Grid Overlay */}
+              <div className="absolute inset-0 bg-grid-dots opacity-20 z-10 pointer-events-none"></div>
+              
+              {/* Core Glow Center */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#00f2ff] blur-[100px] opacity-10 animate-pulse z-10 pointer-events-none"></div>
+              
+              {/* INTERIOR CONTENT (Text & Icon) */}
+              <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-8 text-center">
+                
+                {/* Símbolo do Gelo (Snowflake) */}
+                <div className="mb-6 relative">
+                  <Snowflake className="w-16 h-16 text-[#00f2ff] drop-shadow-[0_0_20px_rgba(0,242,255,0.6)] animate-spin-slow" />
+                  <div className="absolute inset-0 w-full h-full bg-[#00f2ff] blur-[25px] opacity-20 animate-pulse"></div>
+                </div>
+                
+                {/* Ragha Service Text */}
+                <div className="flex flex-col items-center">
+                  <h2 className="ice-glow font-gamer text-[3.8rem] md:text-[4.5rem] font-black uppercase leading-[0.8] tracking-tighter drop-shadow-[0_8px_20px_rgba(0,0,0,1)]">
+                    RAGHA
+                  </h2>
+                  <h2 className="font-gamer text-2xl md:text-[2.6rem] font-black uppercase leading-[1.2] tracking-[0.2em] text-[#00f2ff] drop-shadow-[0_4px_10px_rgba(0,242,255,0.4)] mt-1">
+                    SERVICE
+                  </h2>
+                </div>
+
+                {/* Processing Indicator */}
+                <div className="mt-8 flex gap-3 opacity-60">
+                  <div className="h-1.5 w-8 bg-white/10 rounded-full"></div>
+                  <div className="h-1.5 w-14 bg-[#00f2ff] rounded-full shadow-[0_0_10px_#00f2ff]"></div>
+                  <div className="h-1.5 w-8 bg-white/10 rounded-full"></div>
+                </div>
+              </div>
+
+              {/* Secure Token Badge (Top Left Corner) */}
+              <div className="absolute top-6 left-6 z-40 bg-black/80 backdrop-blur-md border border-white/10 p-2.5 rounded-xl shadow-[0_0_15px_rgba(0,242,255,0.2)]">
+                <ShieldCheck className="w-5 h-5 text-[#00f2ff] drop-shadow-[0_0_8px_#00f2ff]" />
               </div>
             </div>
 
-            {/* Top Left Shield Icon */}
-            <div className="absolute top-10 left-10 z-40 bg-black/80 backdrop-blur-md border border-white/10 p-4 rounded-2xl shadow-[0_0_20px_rgba(0,242,255,0.2)]">
-              <ShieldCheck className="w-8 h-8 text-[#00f2ff] drop-shadow-[0_0_10px_#00f2ff]" />
-            </div>
-
-            {/* Decorative Corner Frames */}
-            <div className="absolute top-0 left-0 w-32 h-32 border-t-4 border-l-4 border-white/5 rounded-tl-[3rem] z-40"></div>
-            <div className="absolute bottom-0 right-0 w-32 h-32 border-b-8 border-r-8 border-[#00f2ff]/20 rounded-br-[3rem] z-40"></div>
+            {/* Outer Ambient Reflection */}
+            <div className="absolute -inset-8 bg-[#00f2ff] blur-[120px] opacity-[0.03] rounded-full pointer-events-none z-0 group-hover:opacity-[0.05] transition-opacity"></div>
           </div>
         </div>
       </div>
@@ -154,7 +186,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
           to { transform: rotate(360deg); }
         }
         .animate-spin-slow {
-          animation: spin-slow 12s linear infinite;
+          animation: spin-slow 15s linear infinite;
         }
       `}</style>
     </div>
