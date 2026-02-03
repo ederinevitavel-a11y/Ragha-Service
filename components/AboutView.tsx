@@ -100,20 +100,23 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
         </div>
         <div className="relative z-10 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#bc13fe]/20 border border-[#bc13fe]/40 rounded-full text-[#bc13fe] text-[10px] font-gamer uppercase tracking-widest mb-4">
-            <Sparkles className="w-3 h-3" /> Serviço Exclusivo
+            <Sparkles className="w-3 h-3" /> Proposta Especial
           </div>
           <h3 className="text-2xl md:text-3xl font-gamer font-bold text-white mb-4 leading-tight">
-            Temos a opção em você <span className="text-[#39ff14]">comandar o seu boneco</span> na Soul War Quest!
+            Quer ver seu <span className="text-[#39ff14]">main char 1000+</span> na rotação de Soul War e Rotten Blood?
           </h3>
-          <p className="text-xl text-gray-300 font-light mb-6">
-            Tem interesse? Fale direto comigo. <span className="text-white font-bold">Ragha Healer</span>
+          <p className="text-lg md:text-xl text-gray-300 font-light mb-6">
+            E ainda participar das bags que vierem em todos os main char nas quests? Fale direto com a gente que temos uma <span className="text-white font-bold">proposta boa pra você!!!</span>
           </p>
           <div className="flex gap-4">
             <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-gamer tracking-widest text-gray-400">
               #SOULWAR
             </div>
             <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-gamer tracking-widest text-gray-400">
-              #SELFPLAY
+              #ROTTENBLOOD
+            </div>
+            <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-gamer tracking-widest text-gray-400">
+              #1000PLUS
             </div>
           </div>
         </div>
