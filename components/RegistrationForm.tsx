@@ -217,7 +217,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
             <ChevronLeft className="w-6 h-6" />
           </button>
           <div className="animate-[fadeIn_0.5s_ease-out]">
-            <h2 className="text-3xl font-gamer font-black text-white uppercase tracking-tighter">Request <span className="transition-colors duration-1000" style={{ color: currentTheme.color }}>Service</span></h2>
+            <h2 className="text-3xl font-gamer font-black text-white uppercase tracking-tighter">Start <span className="transition-colors duration-1000" style={{ color: currentTheme.color }}>Service</span></h2>
             <p className="text-[10px] font-gamer text-gray-400 uppercase tracking-widest mt-1 opacity-70">Status: {currentTheme.name}</p>
           </div>
         </div>
@@ -251,19 +251,26 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
                     <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${isQuestMenuOpen ? 'rotate-180' : ''}`} />
                   </div>
                   {isQuestMenuOpen && (
-                    <div className="absolute left-0 right-0 top-[115%] z-[60] bg-[#0a0a0c]/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.9)] animate-[fadeIn_0.2s_ease-out]">
+                    <div className="absolute left-0 right-0 top-[115%] z-[60] bg-[#0a0a0c]/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.9)] animate-[fadeIn_0.2s_ease-out] p-1">
                       {Object.values(Quest).map(q => {
                         const questTheme = themes[q];
+                        const isSelected = formData.quest === q;
                         return (
                           <div key={q} 
                             onMouseEnter={() => setHoveredQuest(q)}
                             onMouseLeave={() => setHoveredQuest(null)}
                             onClick={() => handleQuestSelect(q)}
-                            className={`relative flex items-center gap-3 p-5 hover:bg-white/10 transition-all cursor-pointer border-b border-white/5 last:border-none ${formData.quest === q ? 'bg-white/10' : ''}`}
+                            className={`relative flex items-center gap-3 p-5 transition-all cursor-pointer border-b border-white/5 last:border-none rounded-xl ${isSelected ? 'bg-white/10' : 'hover:bg-white/5'}`}
+                            style={{ 
+                              borderColor: isSelected ? `${questTheme.color}88` : 'transparent',
+                              borderWidth: isSelected ? '1px' : '0px',
+                              borderStyle: 'solid',
+                              boxShadow: isSelected ? `0 0 20px ${questTheme.color}33` : 'none'
+                            }}
                           >
-                             {formData.quest === q ? <CheckSquare className="w-5 h-5" style={{ color: currentTheme.color }} /> : <Square className="w-5 h-5 text-gray-700" />}
+                             {isSelected ? <CheckSquare className="w-5 h-5" style={{ color: questTheme.color }} /> : <Square className="w-5 h-5 text-gray-700" />}
                              <span className="text-xl">{questIcons[q]}</span>
-                             <span className={`text-sm font-bold ${formData.quest === q ? 'text-white' : 'text-gray-400'}`}>{q}</span>
+                             <span className={`text-sm font-bold ${isSelected ? 'text-white' : 'text-gray-400'}`}>{q}</span>
 
                              {hoveredQuest === q && questInfo[q] && (
                                <div className="absolute left-[102%] top-[-20px] w-[320px] bg-[#0d0d0f]/95 border rounded-2xl p-6 z-[100] animate-[slideInRight_0.3s_ease-out] hidden md:block backdrop-blur-2xl shadow-2xl"
@@ -449,8 +456,17 @@ interface CompactCardProps {
 }
 
 const CompactCard: React.FC<CompactCardProps> = ({ icon, label, children, color }) => {
+  // Se for uma cor de quest (não as cores padrão de outros campos), aplicamos o brilho neon sutil
+  const isQuestField = color !== '#ffffff' && color !== '#39ff14' && color !== '#bc13fe' && color !== '#fbbf24' && color !== '#00f2ff';
+  
   return (
-    <div className="bg-[#0a0a0c]/60 backdrop-blur-md border border-white/5 p-6 rounded-[2rem] flex flex-col gap-4 group transition-all hover:border-white/10 shadow-xl h-full">
+    <div 
+      className="bg-[#0a0a0c]/60 backdrop-blur-md border p-6 rounded-[2rem] flex flex-col gap-4 group transition-all shadow-xl h-full"
+      style={{ 
+        borderColor: color !== '#ffffff' ? `${color}44` : 'rgba(255, 255, 255, 0.05)',
+        boxShadow: color !== '#ffffff' ? `0 0 25px ${color}11` : 'none'
+      }}
+    >
       <div className="flex items-center gap-4">
         <div className="p-3 rounded-2xl bg-black/40 border-2 transition-all duration-700 flex items-center justify-center flex-shrink-0"
           style={{ borderColor: `${color}44`, color: color, boxShadow: `0 0 15px ${color}22` }}>
