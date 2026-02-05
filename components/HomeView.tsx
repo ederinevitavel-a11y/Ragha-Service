@@ -40,7 +40,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
           <div className="space-y-4">
             <p className="text-gray-400 text-lg">
               Tem interesse? Só preencher nosso formulário de solicitação. <br />
-              <span className="text-[#39ff14] font-medium italic">Nosso time está preparado para realizar the melhor service que o seu char poderia ter!</span>
+              <span className="text-[#39ff14] font-medium italic">Nosso time está preparado para realizar o melhor service que o seu char poderia ter!</span>
             </p>
             <p className="text-xl flex items-center justify-center lg:justify-start gap-2 text-white font-gamer tracking-widest uppercase text-xs">
               Confiança e o nome de sempre! <span className="w-8 h-[1px] bg-[#00f2ff]"></span>
