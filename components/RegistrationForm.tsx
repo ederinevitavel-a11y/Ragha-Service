@@ -1,11 +1,10 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Shield, Coins, Map as MapIcon, 
   ChevronLeft, CheckCircle2, 
   Trophy, Sparkles, Send,
   Zap, User, Phone, ChevronDown, CheckSquare, Square,
-  ClipboardList, Gift, AlertCircle, FileText, Info
+  ClipboardList, Gift, AlertCircle, FileText, Info, RefreshCw
 } from 'lucide-react';
 import { FormData, Vocation, Quest, PaymentMethod, ServiceLocation } from '../types';
 import { submitToGoogleSheets } from '../services/sheetsService';
@@ -157,13 +156,29 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
     setIsQuestMenuOpen(false);
   };
 
+  // Função para validar se todos os campos foram preenchidos
+  const isFormValid = () => {
+    // Fixed: Cast Object.values(formData) to string[] because all properties in FormData interface are strings.
+    // This resolves the error where 'trim' was reported as not existing on type 'unknown'.
+    return (Object.values(formData) as string[]).every(value => value.trim() !== '');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.quest) return;
+    if (!isFormValid()) return;
+    
     setIsSubmitting(true);
     const success = await submitToGoogleSheets(formData);
     setIsSubmitting(false);
     if (success) setIsSuccess(true);
+  };
+
+  const handleNewRequest = () => {
+    // Mantém todos os campos exceto a Quest e o tema para facilitar nova solicitação
+    setFormData(prev => ({ ...prev, quest: '' }));
+    setActiveThemeKey('DEFAULT');
+    setIsSuccess(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const fieldColor = formData.quest ? currentTheme.color : undefined;
@@ -218,24 +233,45 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
           </button>
           <div className="animate-[fadeIn_0.5s_ease-out]">
             <h2 className="text-3xl font-gamer font-black text-white uppercase tracking-tighter">Start <span className="transition-colors duration-1000" style={{ color: currentTheme.color }}>Service</span></h2>
-            <p className="text-[10px] font-gamer text-gray-400 uppercase tracking-widest mt-1 opacity-70">Status: {currentTheme.name}</p>
+            <p className="text-[10px] font-gamer text-gray-500 uppercase tracking-widest mt-1 opacity-70">Status: {currentTheme.name}</p>
           </div>
         </div>
 
         {isSuccess ? (
-          <div className="max-w-3xl mx-auto text-center py-20 animate-[fadeIn_0.5s_ease-out]">
-            <div className="inline-block p-8 rounded-full mb-10 border-2 shadow-2xl transition-all duration-700"
-              style={{ backgroundColor: `${currentTheme.color}22`, borderColor: `${currentTheme.color}88`, boxShadow: `0 0 40px ${currentTheme.color}33` }}>
-              <CheckCircle2 className="w-20 h-20" style={{ color: currentTheme.color }} />
+          <div className="max-w-3xl mx-auto text-center py-16 animate-[fadeIn_0.5s_ease-out]">
+            <div className="relative inline-block mb-10">
+              <div className="absolute inset-0 rounded-full blur-[40px] opacity-40 animate-pulse" style={{ backgroundColor: currentTheme.color }}></div>
+              <div className="relative p-8 rounded-full border-2 shadow-2xl transition-all duration-700 bg-black/40 backdrop-blur-xl"
+                style={{ borderColor: `${currentTheme.color}88`, boxShadow: `0 0 40px ${currentTheme.color}33` }}>
+                <CheckCircle2 className="w-24 h-24" style={{ color: currentTheme.color }} />
+              </div>
             </div>
-            <h2 className="text-3xl md:text-5xl font-gamer font-black text-white mb-8 uppercase tracking-tighter leading-tight">
+            
+            <h2 className="text-4xl md:text-6xl font-gamer font-black text-white mb-6 uppercase tracking-tighter leading-tight drop-shadow-2xl">
               MISSÃO <span style={{ color: currentTheme.color }}>CONFIRMADA,</span>
-              <br />
-              <span className="text-lg md:text-2xl opacity-80 block mt-4">EM BREVE ENTRAREMOS EM CONTATO!</span>
             </h2>
-            <button onClick={onBack} className="px-10 py-4 bg-white/5 border border-gray-700 text-white font-gamer rounded-xl mx-auto flex items-center gap-2 hover:border-white transition-all backdrop-blur-sm mt-8">
-              <ChevronLeft className="w-5 h-5" /> Voltar ao Início
-            </button>
+            <p className="text-xl md:text-2xl text-gray-300 font-gamer uppercase tracking-widest opacity-80 mb-12">
+              EM BREVE ENTRAREMOS EM CONTATO!
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <button 
+                onClick={handleNewRequest}
+                className="group relative px-10 py-5 bg-white text-black font-gamer font-bold rounded-2xl flex items-center justify-center gap-3 hover:scale-105 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)] uppercase tracking-widest text-sm w-full sm:w-auto overflow-hidden"
+                style={{ backgroundColor: currentTheme.color }}
+              >
+                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-700" />
+                Nova Solicitação
+              </button>
+              
+              <button 
+                onClick={onBack} 
+                className="px-10 py-5 bg-black/40 border border-gray-700 text-white font-gamer rounded-2xl flex items-center justify-center gap-2 hover:border-white transition-all backdrop-blur-sm uppercase tracking-widest text-sm w-full sm:w-auto"
+              >
+                <ChevronLeft className="w-5 h-5" /> Voltar ao Início
+              </button>
+            </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6 animate-[fadeIn_0.7s_ease-out]">
@@ -424,12 +460,20 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
 
             </div>
 
-            <button type="submit" disabled={isSubmitting || !formData.quest}
-              className="w-full py-6 rounded-[2rem] transition-all duration-700 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-30 shadow-2xl mt-4 font-gamer text-black font-black tracking-[0.4em] uppercase text-xl relative overflow-hidden group"
-              style={{ backgroundColor: currentTheme.color, boxShadow: `0 0 40px ${currentTheme.color}44` }}>
-              <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
-              {isSubmitting ? 'PROCESSANDO...' : 'ENVIAR SOLICITAÇÃO'}
-            </button>
+            <div className="mt-6 flex flex-col items-center gap-4">
+              {!isFormValid() && formData.quest && (
+                <div className="flex items-center gap-2 text-amber-500 font-gamer text-[10px] uppercase tracking-widest animate-pulse">
+                  <AlertCircle className="w-3 h-3" /> Preencha todos os campos obrigatórios (*) para enviar
+                </div>
+              )}
+              
+              <button type="submit" disabled={isSubmitting || !isFormValid()}
+                className="w-full py-6 rounded-[2rem] transition-all duration-700 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed shadow-2xl font-gamer text-black font-black tracking-[0.4em] uppercase text-xl relative overflow-hidden group"
+                style={{ backgroundColor: currentTheme.color, boxShadow: isFormValid() ? `0 0 40px ${currentTheme.color}44` : 'none' }}>
+                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                {isSubmitting ? 'PROCESSANDO...' : 'ENVIAR SOLICITAÇÃO'}
+              </button>
+            </div>
           </form>
         )}
       </div>
@@ -456,9 +500,6 @@ interface CompactCardProps {
 }
 
 const CompactCard: React.FC<CompactCardProps> = ({ icon, label, children, color }) => {
-  // Se for uma cor de quest (não as cores padrão de outros campos), aplicamos o brilho neon sutil
-  const isQuestField = color !== '#ffffff' && color !== '#39ff14' && color !== '#bc13fe' && color !== '#fbbf24' && color !== '#00f2ff';
-  
   return (
     <div 
       className="bg-[#0a0a0c]/60 backdrop-blur-md border p-6 rounded-[2rem] flex flex-col gap-4 group transition-all shadow-xl h-full"
