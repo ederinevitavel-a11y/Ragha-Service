@@ -1,17 +1,31 @@
 
 import React from 'react';
-import { ChevronLeft, Trophy, FileText, CheckCircle2, Shield, Swords, Sparkles } from 'lucide-react';
+import { ChevronLeft, Trophy, FileText, CheckCircle2, Shield, Swords, Sparkles, Coins, MessageSquare } from 'lucide-react';
 
 interface AboutViewProps {
   onBack: () => void;
 }
 
+// Defined QuestItem interface to handle optional properties in the quests array and fix TS errors
+interface QuestItem {
+  icon: string;
+  name: string;
+  color: string;
+  price: string;
+  requirements: string[];
+  vocations: string[];
+  rewards: string[];
+  note?: string;
+  footerNote?: string;
+}
+
 const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
-  const quests = [
+  const quests: QuestItem[] = [
     {
       icon: '🩸',
       name: 'Rotten Blood Quest',
       color: '#ff0000',
+      price: '2.000 TC',
       requirements: [
         '5kk para a entrada da Quest ou 2 Bloody Tears',
         '3kk por tentativa (Refill)'
@@ -29,6 +43,7 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
       icon: '👾',
       name: 'Primal Ordeal Quest',
       color: '#fbbf24',
+      price: '1.500 TC',
       requirements: [
         'Within The Tides Quest (Requisito mínimo as missões: Of Feathers and Flowers / Star-Crossed Lovers)',
         '6kk para os 12 dias (Refill)'
@@ -46,6 +61,7 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
       icon: '👻',
       name: 'Soul War Quest',
       color: '#a855f7',
+      price: '1.500 TC',
       requirements: [
         'Ter completado a Feaster of Souls Quest (Ter as 3 missões completas)',
         '5kk (Refill)'
@@ -57,13 +73,13 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
         '🏹 RP 300+',
         '🥊 EM 450+'
       ],
-      note: 'Tem interesse em você comandar o seu boneco na Soul War Quest? Lembre-se! Temos essa opção também!!!',
       rewards: ['1️⃣ Soul Item bis (aleatório)']
     },
     {
       icon: '⚰️',
       name: 'The Roost of the Graveborn Quest',
       color: '#00f2ff',
+      price: 'Consulte',
       requirements: [
         '2kk (Refill)'
       ],
@@ -77,9 +93,13 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
       rewards: [
         '1️⃣ Crypt Rune (aleatória) - (Fiery, Icy, Deathly, Ancient, Necromantic)'
       ],
+      // Added missing note as it's expected by the UI logic below
+      note: 'Acesso a Draconia e hunts exclusivas.',
       footerNote: 'Observação: Necessária pra trocar por um dos itens Bis Crypt (lembrando que precisa de 5 Crypts Runes diferentes pra trocar por um item aleatório). Acesso a Draconia e as hunts: Outer Crypt, Inner Crypt e Unhallowed Crypt'
     }
   ];
+
+  const whatsappUrl = "https://wa.me/553592451052?text=Oi%20Ragha%2C%20cheguei%20pelo%20app%21";
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 animate-[fadeIn_0.5s_ease-out]">
@@ -94,29 +114,39 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
       </div>
 
       {/* Hero Service Box */}
-      <div className="bg-gradient-to-r from-black/80 to-[#bc13fe]/10 border border-[#bc13fe]/30 p-8 rounded-3xl mb-16 shadow-[0_0_40px_rgba(188,19,254,0.1)] relative overflow-hidden group">
+      <div className="bg-gradient-to-r from-black/80 to-[#bc13fe]/10 border border-[#bc13fe]/30 p-8 md:p-12 rounded-[2.5rem] mb-16 shadow-[0_0_60px_rgba(188,19,254,0.15)] relative overflow-hidden group">
         <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-           <Swords className="w-32 h-32 text-white" />
+           <Swords className="w-48 h-48 text-white" />
         </div>
         <div className="relative z-10 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#bc13fe]/20 border border-[#bc13fe]/40 rounded-full text-[#bc13fe] text-[10px] font-gamer uppercase tracking-widest mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#bc13fe]/20 border border-[#bc13fe]/40 rounded-full text-[#bc13fe] text-[10px] font-gamer uppercase tracking-widest mb-6">
             <Sparkles className="w-3 h-3" /> Proposta Especial
           </div>
-          <h3 className="text-2xl md:text-3xl font-gamer font-bold text-white mb-4 leading-tight">
-            Quer ver seu <span className="text-[#39ff14]">main char 1000+</span> na rotação de Soul War e Rotten Blood?
+          <h3 className="text-3xl md:text-5xl font-gamer font-bold text-white mb-6 leading-tight uppercase tracking-tighter">
+            Quer ver seu <span className="text-[#39ff14] neon-glow-green">main char 1000+</span> na rotação?
           </h3>
-          <p className="text-lg md:text-xl text-gray-300 font-light mb-6">
-            E ainda participar das bags que vierem em todos os main char nas quests? Fale direto com a gente que temos uma <span className="text-white font-bold">proposta boa pra você!!!</span>
+          <p className="text-lg md:text-xl text-gray-300 font-medium mb-8 leading-relaxed">
+            Participe das bags em todos os main chars nas quests. Fale direto com a gente que temos uma <span className="text-white font-bold underline decoration-[#bc13fe]">proposta boa pra você!!!</span>
           </p>
-          <div className="flex gap-4">
-            <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-gamer tracking-widest text-gray-400">
-              #SOULWAR
-            </div>
-            <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-gamer tracking-widest text-gray-400">
-              #ROTTENBLOOD
-            </div>
-            <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-gamer tracking-widest text-gray-400">
-              #1000PLUS
+          
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-10">
+            <a 
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-10 py-5 bg-[#25D366]/10 border border-[#25D366]/40 rounded-2xl text-[#25D366] font-gamer font-bold tracking-[0.2em] uppercase text-xs hover:bg-[#25D366]/20 hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(37,211,102,0.15)] group/wa"
+            >
+              <MessageSquare className="w-5 h-5 group-hover/wa:rotate-12 transition-transform" />
+              Falar no WhatsApp
+            </a>
+
+            <div className="flex gap-3">
+              <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-gamer tracking-widest text-gray-500 uppercase">
+                #SOULWAR
+              </div>
+              <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-gamer tracking-widest text-gray-500 uppercase">
+                #ROTTENBLOOD
+              </div>
             </div>
           </div>
         </div>
@@ -129,12 +159,15 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
             key={idx}
             className="bg-[#0a0a0c]/80 backdrop-blur-xl border border-white/5 rounded-3xl p-8 relative overflow-hidden group hover:border-white/10 transition-all shadow-2xl"
           >
-            {/* Header */}
-            <div className="flex items-center gap-4 mb-8">
-              <span className="text-4xl">{quest.icon}</span>
-              <h4 className="text-xl font-gamer font-bold text-white uppercase tracking-tight" style={{ color: quest.color }}>
-                {quest.name}
-              </h4>
+            {/* Header - Icons removed per request */}
+            <div className="flex items-center justify-between gap-4 mb-8">
+              <div className="flex items-center gap-4">
+                <span className="text-4xl">{quest.icon}</span>
+                <h4 className="text-xl font-gamer font-bold text-white uppercase tracking-tight" style={{ color: quest.color }}>
+                  {quest.name}
+                </h4>
+              </div>
+              {/* Image Icon Box Removed */}
             </div>
 
             <div className="space-y-8">
@@ -164,6 +197,19 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
                 ))}
               </div>
 
+              {/* Price Section */}
+              <div className="bg-black/60 border border-white/10 p-5 rounded-2xl relative overflow-hidden group/price">
+                <div className="absolute top-0 right-0 p-2 opacity-5">
+                   <Coins className="w-12 h-12" />
+                </div>
+                <div className="flex items-center gap-3 text-[10px] font-gamer text-gray-500 uppercase tracking-[0.2em] mb-2">
+                   <Coins className="w-4 h-4" /> Valor do Service
+                </div>
+                <div className="text-3xl font-gamer font-black tracking-tighter transition-all duration-500" style={{ color: quest.color, textShadow: `0 0 15px ${quest.color}66` }}>
+                  {quest.price}
+                </div>
+              </div>
+
               {/* Note if exists */}
               {quest.note && (
                 <div className="bg-[#39ff14]/5 border border-[#39ff14]/20 p-4 rounded-2xl italic text-xs text-gray-300 leading-relaxed">
@@ -174,11 +220,12 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
               {/* Rewards */}
               <div>
                 <div className="flex items-center gap-2 text-[10px] font-gamer uppercase tracking-[0.2em] mb-4" style={{ color: '#FFD700' }}>
-                  <Trophy className="w-3.5 h-3.5" /> Recompensa
+                  <Trophy className="w-3.5 h-3.5" /> Recompensa Principal
                 </div>
                 <div className="space-y-3">
                   {quest.rewards.map((reward, i) => (
-                    <div key={i} className="text-sm text-gray-100 font-bold bg-white/5 p-4 rounded-2xl border border-white/10">
+                    <div key={i} className="text-sm text-gray-100 font-bold bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: quest.color }}></div>
                       {reward}
                     </div>
                   ))}
@@ -213,6 +260,11 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
           Voltar ao Topo
         </button>
       </div>
+      <style>{`
+        .neon-glow-green {
+          text-shadow: 0 0 10px rgba(57, 255, 20, 0.5), 0 0 20px rgba(57, 255, 20, 0.2);
+        }
+      `}</style>
     </div>
   );
 };

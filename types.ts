@@ -10,9 +10,7 @@ export enum Vocation {
 export enum PaymentMethod {
   COINS = 'Pagamento em coins',
   PERCENTAGE = '50% (% do Item)',
-  CLOSED_PT = 'PT Fechada (5 chars para fazer a quest)',
-  TO_DECIDE = 'A decidir (Em dúvida no momento)',
-  FIXED_FEE = '15kk (The Roost of the Graveborn Quest)'
+  CLOSED_PT = 'PT Fechada (5 chars para fazer a quest)'
 }
 
 export enum ServiceLocation {

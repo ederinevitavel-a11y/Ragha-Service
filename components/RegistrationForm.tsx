@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Shield, Coins, Map as MapIcon, 
@@ -71,9 +72,7 @@ const vocationIcons: Record<string, string> = {
 const paymentIcons: Record<string, string> = {
   [PaymentMethod.COINS]: '🤑',
   [PaymentMethod.PERCENTAGE]: '💰',
-  [PaymentMethod.CLOSED_PT]: '👥',
-  [PaymentMethod.TO_DECIDE]: '❓',
-  [PaymentMethod.FIXED_FEE]: '💵'
+  [PaymentMethod.CLOSED_PT]: '👥'
 };
 
 const locationIcons: Record<string, string> = {
@@ -95,8 +94,7 @@ const questInfo: Record<string, { requirements: string[], vocations: string[], r
   [Quest.SOUL_WAR]: {
     requirements: ['Feaster of Souls Quest completa', '5kk (Refill)'],
     vocations: ['⚔️ EK 500+', '❄️ ED 300+', '🔥 MS 300+', '🏹 RP 300+', '👊 EM 450+'],
-    rewards: ['1️⃣ Soul Item bis (aleatório)'],
-    note: 'Você pode comandar o seu boneco na Soul War!'
+    rewards: ['1️⃣ Soul Item bis (aleatório)']
   },
   [Quest.GRAVEBORN]: {
     requirements: ['2kk (Refill)'],
@@ -156,10 +154,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
     setIsQuestMenuOpen(false);
   };
 
-  // Função para validar se todos os campos foram preenchidos
   const isFormValid = () => {
-    // Fixed: Cast Object.values(formData) to string[] because all properties in FormData interface are strings.
-    // This resolves the error where 'trim' was reported as not existing on type 'unknown'.
     return (Object.values(formData) as string[]).every(value => value.trim() !== '');
   };
 
@@ -174,7 +169,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
   };
 
   const handleNewRequest = () => {
-    // Mantém todos os campos exceto a Quest e o tema para facilitar nova solicitação
     setFormData(prev => ({ ...prev, quest: '' }));
     setActiveThemeKey('DEFAULT');
     setIsSuccess(false);
@@ -185,7 +179,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
 
   return (
     <div className="relative min-h-[90vh] overflow-hidden">
-      {/* BACKGROUND DINÂMICO */}
       <div className="fixed inset-0 z-0 transition-all duration-1000 ease-in-out pointer-events-none">
         <div 
           className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] blur-[150px] opacity-40 transition-colors duration-1000"
@@ -397,7 +390,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
                         <div key={p} onClick={() => { setFormData(prev => ({ ...prev, paymentMethod: p })); setIsPaymentMenuOpen(false); }}
                           className="flex items-center gap-3 p-4 hover:bg-white/10 transition-all cursor-pointer border-b border-white/5 last:border-none">
                            {formData.paymentMethod === p ? <CheckSquare className="w-5 h-5" style={{ color: fieldColor || '#00f2ff' }} /> : <Square className="w-5 h-5 text-gray-700" />}
-                           <span className="text-xl">{paymentIcons[p]}</span>
+                           <span className="text-xl">{paymentIcons[p as PaymentMethod]}</span>
                            <span className="text-sm font-bold text-gray-300">{p}</span>
                         </div>
                       ))}
