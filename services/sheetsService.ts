@@ -9,7 +9,7 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9V95dWbdnuH
 /**
  * URL para o formulário específico de Registro de Interesse de Itens (Encomendas).
  */
-const ORDER_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQ6GE1vV1ZGzGFWmvgtlYpryJobVSFUBHXUuzpU2U6WwkVnW5OrJ3Cyya2Z_v8AiT5/exec';
+const ORDER_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbQ6GE1vV1ZGzGFWmvgtlYpryJobVSFUBHXUuzpU2U6WwkVnW5OrJ3Cyya2Z_v8AiT5/exec';
 
 /**
  * URL para leitura da aba "Controle Financeiro" via link de publicação CSV.
@@ -18,18 +18,24 @@ const READ_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzShK__gBhMaz
 
 /**
  * Envia os dados para o Google Sheets (Formulário de Inscrição de Quests).
+ * Usa URLSearchParams para máxima compatibilidade com Google Apps Script.
  */
 export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => {
   console.log('Ragha Service: Enviando inscrição de quest...', data);
   try {
+    const params = new URLSearchParams();
+    Object.entries(data).forEach(([key, value]) => {
+      params.append(key, value as string);
+    });
+
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       cache: 'no-cache',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify(data),
+      body: params.toString(),
     });
     return true;
   } catch (error) {
@@ -40,20 +46,29 @@ export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => 
 
 /**
  * Envia os dados para o Google Sheets (Registro de Interesse de Itens).
- * Conforme solicitado, usa o novo script para Nome do Char, Item e Telefone.
+ * Ajustado para coincidir exatamente com o script do usuário:
+ * itemDesejado, nomeChar, telefone.
  */
 export const submitOrderToGoogleSheets = async (data: OrderData): Promise<boolean> => {
   console.log('Ragha Service: Enviando registro de interesse de item...', data);
   try {
+    // Mapeando para os nomes de chave que o seu Google Script espera
+    const payload = {
+      nomeChar: data.charName,
+      itemDesejado: data.itemName,
+      telefone: data.phone
+    };
+
     await fetch(ORDER_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
+      mode: 'no-cors', // Mantido no-cors para evitar problemas de preflight
       cache: 'no-cache',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain', // Usamos text/plain para que o GAS receba o corpo bruto sem erro de CORS
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
+    
     return true;
   } catch (error) {
     console.error('Ragha Service Order Error:', error);
