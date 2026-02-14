@@ -8,8 +8,9 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9V95dWbdnuH
 
 /**
  * URL específica do Google Apps Script para o formulário de ENCOMENDAS (Registro de Interesse).
+ * Atualizada conforme a última imagem fornecida pelo usuário.
  */
-const ORDERS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfwu6TfZ2yp-Bk5QeR9EPRRyZfYTQ8iIQ5DARZboZT8B1U_FBLP3Qt2bNvgtPJyXtx/exec';
+const ORDERS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVaR9A04_KUj5mkYDmaPZiISrG6QgmYCTnEz68PQo2QAwTcOeuKnQAnv0XT6QR6bjw/exec';
 
 /**
  * URL para leitura da aba "Controle Financeiro" via link de publicação CSV.
@@ -40,27 +41,28 @@ export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => 
 
 /**
  * Envia os dados de encomenda (Registro de Interesse) para o Google Sheets.
- * Mapeia os campos para as chaves em português conforme solicitado no snippet.
+ * Envia como JSON stringificado para ser capturado pelo e.postData.contents no Apps Script.
  */
 export const submitOrderToGoogleSheets = async (data: OrderData): Promise<boolean> => {
   console.log('Ragha Service: Enviando encomenda...', data);
   try {
-    // Mapeamento para os campos exatos do seu script do Google
+    // Mapeamento das chaves para bater com o seu script: data.itemDesejado, data.nomeChar, data.telefone
     const payload = {
       itemDesejado: data.itemName,
       nomeChar: data.charName,
       telefone: data.phone
     };
 
+    // Enviamos como string pura. O modo 'no-cors' fará com que o Apps Script 
+    // receba isso no e.postData.contents
     await fetch(ORDERS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       cache: 'no-cache',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify(payload),
     });
+    
+    // Como usamos no-cors, não podemos ler a resposta, mas assumimos sucesso se não houver erro de rede
     return true;
   } catch (error) {
     console.error('Ragha Service Order Error:', error);
