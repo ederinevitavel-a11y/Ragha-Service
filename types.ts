@@ -37,8 +37,10 @@ export interface FormData {
 }
 
 export interface OrderData {
-  charName: string;
   itemName: string;
+  priceProposal: string;
+  world: string;
+  charName: string;
   phone: string;
 }
 

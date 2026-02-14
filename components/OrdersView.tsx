@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ChevronLeft, Package, Sparkles, User, 
-  Phone, CheckCircle2, 
-  RefreshCw, AlertCircle
+  Map as MapIcon, Coins, Phone, CheckCircle2, 
+  RefreshCw, AlertCircle, Hammer
 } from 'lucide-react';
 import { OrderData } from '../types';
 import { fetchAvailability, submitOrderToGoogleSheets } from '../services/sheetsService';
@@ -78,8 +78,10 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
   const [showForm, setShowForm] = useState(false);
   const [availableItems, setAvailableItems] = useState<string[]>([]);
   const [formData, setFormData] = useState<OrderData>({
-    charName: '',
     itemName: '',
+    priceProposal: '',
+    world: '',
+    charName: '',
     phone: ''
   });
 
@@ -100,6 +102,7 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
     setFormData(prev => ({ 
       ...prev, 
       itemName: item.name,
+      priceProposal: item.price + ' TC'
     }));
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -169,6 +172,20 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
             </p>
           </div>
         </div>
+
+        {!showForm && !isSuccess && (
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 px-6 py-3 bg-amber-500/10 border border-amber-500/30 rounded-xl shadow-[0_0_20px_rgba(251,191,36,0.1)] group">
+              <div className="relative">
+                <Hammer className="w-4 h-4 text-amber-500 animate-[bounce_2s_infinite]" />
+                <div className="absolute inset-0 bg-amber-500 blur-md opacity-20"></div>
+              </div>
+              <span className="text-[10px] font-gamer font-bold text-amber-500 uppercase tracking-[0.2em] whitespace-nowrap">
+                Página em Construção
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {isSuccess ? (
@@ -186,28 +203,40 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
           </button>
         </div>
       ) : showForm ? (
-        <div className="max-w-2xl mx-auto animate-[slideInUp_0.4s_ease-out]">
+        <div className="max-w-4xl mx-auto animate-[slideInUp_0.4s_ease-out]">
            <div className="bg-[#0a0a0c]/80 backdrop-blur-2xl border border-white/5 rounded-[2rem] p-6 md:p-10 mb-10 shadow-2xl">
               <h3 className="text-lg font-gamer font-bold text-white mb-8 uppercase tracking-widest flex items-center gap-2.5 border-b border-white/5 pb-4">
                 <Package className="text-[#39ff14] w-5 h-5" /> Registro de Interesse
               </h3>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <OrderField icon={<User />} label="NOME DO CHAR *" color="#bc13fe">
-                  <input required name="charName" placeholder="Ex: Ragha Knight" value={formData.charName} onChange={handleChange}
-                    className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
-                </OrderField>
-
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <OrderField icon={<Package />} label="ITEM DESEJADO *" color="#39ff14">
                   <input required name="itemName" placeholder="Ex: Sanguine Blade" value={formData.itemName} onChange={handleChange}
                     className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
                 </OrderField>
 
-                <OrderField icon={<Phone />} label="TELEFONE *" color="#25D366">
-                  <input required name="phone" placeholder="Ex: 553592451052" value={formData.phone} onChange={handleChange}
+                <OrderField icon={<Coins />} label="PROPOSTA (TC/GOLD) *" color="#fbbf24">
+                  <input required name="priceProposal" placeholder="Sua oferta" value={formData.priceProposal} onChange={handleChange}
                     className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
                 </OrderField>
 
-                <div className="flex flex-col items-center gap-5 mt-8">
+                <OrderField icon={<MapIcon />} label="MUNDO DO CHAR *" color="#00f2ff">
+                  <input required name="world" placeholder="Ex: Kalibra" value={formData.world} onChange={handleChange}
+                    className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
+                </OrderField>
+
+                <OrderField icon={<User />} label="NOME DO SEU CHAR *" color="#bc13fe">
+                  <input required name="charName" placeholder="Ex: Ragha Knight" value={formData.charName} onChange={handleChange}
+                    className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
+                </OrderField>
+
+                <div className="md:col-span-2">
+                  <OrderField icon={<Phone />} label="WHATSAPP PARA CONTATO *" color="#25D366">
+                    <input required name="phone" placeholder="Ex: 553592451052" value={formData.phone} onChange={handleChange}
+                      className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
+                  </OrderField>
+                </div>
+
+                <div className="md:col-span-2 flex flex-col items-center gap-5 mt-4">
                   {!isFormValid() && (
                     <div className="flex items-center gap-2 text-amber-500 font-gamer text-[8px] uppercase tracking-[0.2em] animate-pulse">
                       <AlertCircle className="w-2.5 h-2.5" /> Preencha todos os campos obrigatórios
