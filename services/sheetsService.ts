@@ -9,7 +9,7 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9V95dWbdnuH
 /**
  * URL para o formulário específico de Registro de Interesse de Itens (Encomendas).
  */
-const ORDER_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbQ6GE1vV1ZGzGFWmvgtlYpryJobVSFUBHXUuzpU2U6WwkVnW5OrJ3Cyya2Z_v8AiT5/exec';
+const ORDER_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQ6GE1vV1ZGzGFWmvgtlYpryJobVSFUBHXUuzpU2U6WwkVnW5OrJ3Cyya2Z_v8AiT5/exec';
 
 /**
  * URL para leitura da aba "Controle Financeiro" via link de publicação CSV.
@@ -46,29 +46,29 @@ export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => 
 
 /**
  * Envia os dados para o Google Sheets (Registro de Interesse de Itens).
- * Ajustado para coincidir exatamente com o script do usuário:
- * itemDesejado, nomeChar, telefone.
+ * Conforme solicitado, usa o novo script para Nome do Char, Item e Telefone.
  */
 export const submitOrderToGoogleSheets = async (data: OrderData): Promise<boolean> => {
   console.log('Ragha Service: Enviando registro de interesse de item...', data);
   try {
-    // Mapeando para os nomes de chave que o seu Google Script espera
-    const payload = {
-      nomeChar: data.charName,
-      itemDesejado: data.itemName,
-      telefone: data.phone
-    };
+    // Transformamos o objeto em parâmetros de URL para evitar bloqueios de CORS
+    const params = new URLSearchParams();
+    params.append('charName', data.charName);
+    params.append('itemName', data.itemName);
+    params.append('phone', data.phone);
 
     await fetch(ORDER_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors', // Mantido no-cors para evitar problemas de preflight
+      mode: 'no-cors',
       cache: 'no-cache',
       headers: {
-        'Content-Type': 'text/plain', // Usamos text/plain para que o GAS receba o corpo bruto sem erro de CORS
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify(payload),
+      body: params.toString(),
     });
     
+    // Como usamos no-cors, o fetch não retorna se deu erro no script, 
+    // mas se a requisição foi disparada sem erro de rede, retornamos true.
     return true;
   } catch (error) {
     console.error('Ragha Service Order Error:', error);
