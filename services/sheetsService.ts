@@ -12,9 +12,9 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9V95dWbdnuH
 const ORDERS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzql1l7iecYGG9R5aONpmurhpsJd3KWM6u52KKHzZjK2u8A-lzCvq9JFFlCMZ60kcPq/exec';
 
 /**
- * URL do endpoint JSON para verificação de itens a Pronta Entrega (URL validada pelo usuário).
+ * URL do endpoint JSON para verificação de itens a Pronta Entrega (URL atualizada pelo usuário).
  */
-const STOCK_JSON_URL = 'https://script.google.com/macros/s/AKfycbzQ2NGtODYUGFPWCvHMXy4YG6sJ191WxjF1c9OesLTIDpYQtf8ZdgUNxiaf-2i6FI9h/exec';
+const STOCK_JSON_URL = 'https://script.google.com/macros/s/AKfycbwUEmIic-mBnHExOm1eTa8tT7hTt_RG8Aaa-bpMC-M1x8MpdPUMwdlwFgAs1KfaZhYP/exec';
 
 /**
  * Envia os dados para o Google Sheets (Formulário de Inscrição / Start Service).
