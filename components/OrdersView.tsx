@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ChevronLeft, Package, Sparkles, User, 
-  Map as MapIcon, Coins, Phone, CheckCircle2, 
+  Phone, CheckCircle2, 
   RefreshCw, AlertCircle, Hammer
 } from 'lucide-react';
 import { OrderData } from '../types';
@@ -79,8 +79,6 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
   const [availableItems, setAvailableItems] = useState<string[]>([]);
   const [formData, setFormData] = useState<OrderData>({
     itemName: '',
-    priceProposal: '',
-    world: '',
     charName: '',
     phone: ''
   });
@@ -102,7 +100,6 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
     setFormData(prev => ({ 
       ...prev, 
       itemName: item.name,
-      priceProposal: item.price + ' TC'
     }));
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -203,24 +200,14 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
           </button>
         </div>
       ) : showForm ? (
-        <div className="max-w-4xl mx-auto animate-[slideInUp_0.4s_ease-out]">
+        <div className="max-w-2xl mx-auto animate-[slideInUp_0.4s_ease-out]">
            <div className="bg-[#0a0a0c]/80 backdrop-blur-2xl border border-white/5 rounded-[2rem] p-6 md:p-10 mb-10 shadow-2xl">
               <h3 className="text-lg font-gamer font-bold text-white mb-8 uppercase tracking-widest flex items-center gap-2.5 border-b border-white/5 pb-4">
                 <Package className="text-[#39ff14] w-5 h-5" /> Registro de Interesse
               </h3>
-              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <OrderField icon={<Package />} label="ITEM DESEJADO *" color="#39ff14">
                   <input required name="itemName" placeholder="Ex: Sanguine Blade" value={formData.itemName} onChange={handleChange}
-                    className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
-                </OrderField>
-
-                <OrderField icon={<Coins />} label="PROPOSTA (TC/GOLD) *" color="#fbbf24">
-                  <input required name="priceProposal" placeholder="Sua oferta" value={formData.priceProposal} onChange={handleChange}
-                    className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
-                </OrderField>
-
-                <OrderField icon={<MapIcon />} label="MUNDO DO CHAR *" color="#00f2ff">
-                  <input required name="world" placeholder="Ex: Kalibra" value={formData.world} onChange={handleChange}
                     className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
                 </OrderField>
 
@@ -229,14 +216,12 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
                     className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
                 </OrderField>
 
-                <div className="md:col-span-2">
-                  <OrderField icon={<Phone />} label="WHATSAPP PARA CONTATO *" color="#25D366">
-                    <input required name="phone" placeholder="Ex: 553592451052" value={formData.phone} onChange={handleChange}
-                      className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
-                  </OrderField>
-                </div>
+                <OrderField icon={<Phone />} label="WHATSAPP PARA CONTATO *" color="#25D366">
+                  <input required name="phone" placeholder="Ex: 553592451052" value={formData.phone} onChange={handleChange}
+                    className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
+                </OrderField>
 
-                <div className="md:col-span-2 flex flex-col items-center gap-5 mt-4">
+                <div className="flex flex-col items-center gap-5 mt-8">
                   {!isFormValid() && (
                     <div className="flex items-center gap-2 text-amber-500 font-gamer text-[8px] uppercase tracking-[0.2em] animate-pulse">
                       <AlertCircle className="w-2.5 h-2.5" /> Preencha todos os campos obrigatórios

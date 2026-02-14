@@ -38,8 +38,6 @@ export interface FormData {
 
 export interface OrderData {
   itemName: string;
-  priceProposal: string;
-  world: string;
   charName: string;
   phone: string;
 }

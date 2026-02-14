@@ -2,21 +2,25 @@
 import { FormData, OrderData } from '../types';
 
 /**
- * URL do seu Google Apps Script real para envio de formulários.
+ * URL do Google Apps Script para o formulário de INSCRIÇÃO (Start Service).
  */
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9V95dWbdnuH-LxaQHEsvmyvjQTK05gLVXFNQcUmaSlE3NwJmxJmOtk9p4xXiNYaE8/exec';
 
 /**
+ * URL específica do Google Apps Script para o formulário de ENCOMENDAS (Registro de Interesse).
+ */
+const ORDERS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfwu6TfZ2yp-Bk5QeR9EPRRyZfYTQ8iIQ5DARZboZT8B1U_FBLP3Qt2bNvgtPJyXtx/exec';
+
+/**
  * URL para leitura da aba "Controle Financeiro" via link de publicação CSV.
- * O uso de 'pub?output=csv' é a forma mais robusta de acessar dados publicamente sem CORS.
  */
 const READ_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzShK__gBhMazxvWaX0pQ-RG18oiEFWE26XFOT2426bqLAQezj5fECdfhVPfcy0DKF7qjL7bVxSQFM/pub?output=csv';
 
 /**
- * Envia os dados para o Google Sheets (Formulário de Inscrição).
+ * Envia os dados para o Google Sheets (Formulário de Inscrição / Start Service).
  */
 export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => {
-  console.log('Ragha Service: Enviando dados para a planilha...', data);
+  console.log('Ragha Service: Enviando inscrição...', data);
   try {
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
@@ -34,21 +38,28 @@ export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => 
   }
 };
 
-// Added missing function to handle order submissions as required by OrdersView.tsx
 /**
- * Envia os dados de encomenda para o Google Sheets.
+ * Envia os dados de encomenda (Registro de Interesse) para o Google Sheets.
+ * Mapeia os campos para as chaves em português conforme solicitado no snippet.
  */
 export const submitOrderToGoogleSheets = async (data: OrderData): Promise<boolean> => {
-  console.log('Ragha Service: Enviando encomenda para a planilha...', data);
+  console.log('Ragha Service: Enviando encomenda...', data);
   try {
-    await fetch(GOOGLE_SCRIPT_URL, {
+    // Mapeamento para os campos exatos do seu script do Google
+    const payload = {
+      itemDesejado: data.itemName,
+      nomeChar: data.charName,
+      telefone: data.phone
+    };
+
+    await fetch(ORDERS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       cache: 'no-cache',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ ...data, submissionType: 'ORDER' }),
+      body: JSON.stringify(payload),
     });
     return true;
   } catch (error) {
@@ -59,54 +70,36 @@ export const submitOrderToGoogleSheets = async (data: OrderData): Promise<boolea
 
 /**
  * Busca a disponibilidade dos itens na aba Controle Financeiro.
- * Retorna uma lista de nomes de itens que estão disponíveis (Col K vazia e Col S = TRUE).
  */
 export const fetchAvailability = async (): Promise<string[]> => {
   try {
-    // Busca os dados da planilha publicada
     const response = await fetch(READ_URL, {
       method: 'GET',
       cache: 'no-cache',
     });
     
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
     const csvText = await response.text();
-    
-    // Parser de CSV
     const lines = csvText.split(/\r?\n/);
     const availableItems: string[] = [];
 
-    // Pulamos o cabeçalho
     for (let i = 1; i < lines.length; i++) {
       if (!lines[i]) continue;
-
-      // Regex para separar por vírgula mas respeitar campos entre aspas
       const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
         .map(cell => cell.replace(/^"(.*)"$/, '$1').trim());
       
-      /**
-       * Mapeamento conforme solicitado:
-       * Coluna H (Index 7): Nome do Item
-       * Coluna K (Index 10): Status de Venda (Vazio = Disponível)
-       * Coluna S (Index 18): Seleção/Ativo (TRUE = Ativo na vitrine)
-       */
       const itemName = row[7];
       const soldStatus = row[10];
       const isSelected = row[18];
 
-      // Se o item tem nome, a coluna de venda está vazia e a seleção está marcada como TRUE
       if (itemName && (!soldStatus || soldStatus.trim() === "") && (isSelected === "TRUE" || isSelected === "true")) {
         availableItems.push(itemName.toUpperCase());
       }
     }
-
-    console.log(`Ragha Service Stock: ${availableItems.length} itens prontos para entrega.`);
     return availableItems;
   } catch (error) {
-    console.error('Ragha Service: Erro crítico ao acessar estoque remoto:', error);
+    console.error('Ragha Service Stock Error:', error);
     return [];
   }
 };
