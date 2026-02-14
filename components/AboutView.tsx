@@ -79,7 +79,7 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
       icon: '⚰️',
       name: 'The Roost of the Graveborn Quest',
       color: '#00f2ff',
-      price: 'Consulte',
+      price: '350 TC',
       requirements: [
         '2kk (Refill)'
       ],
@@ -93,7 +93,6 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
       rewards: [
         '1️⃣ Crypt Rune (aleatória) - (Fiery, Icy, Deathly, Ancient, Necromantic)'
       ],
-      // Added missing note as it's expected by the UI logic below
       note: 'Acesso a Draconia e hunts exclusivas.',
       footerNote: 'Observação: Necessária pra trocar por um dos itens Bis Crypt (lembrando que precisa de 5 Crypts Runes diferentes pra trocar por um item aleatório). Acesso a Draconia e as hunts: Outer Crypt, Inner Crypt e Unhallowed Crypt'
     }
@@ -159,7 +158,7 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
             key={idx}
             className="bg-[#0a0a0c]/80 backdrop-blur-xl border border-white/5 rounded-3xl p-8 relative overflow-hidden group hover:border-white/10 transition-all shadow-2xl"
           >
-            {/* Header - Icons removed per request */}
+            {/* Header */}
             <div className="flex items-center justify-between gap-4 mb-8">
               <div className="flex items-center gap-4">
                 <span className="text-4xl">{quest.icon}</span>
@@ -167,7 +166,6 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
                   {quest.name}
                 </h4>
               </div>
-              {/* Image Icon Box Removed */}
             </div>
 
             <div className="space-y-8">

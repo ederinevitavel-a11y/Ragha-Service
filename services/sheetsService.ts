@@ -1,29 +1,26 @@
 
-import { FormData } from '../types';
+import { FormData, OrderData } from '../types';
 
 /**
- * URL do seu Google Apps Script real.
- * Atualizado para a nova versão fornecida: ...XiNYaE8/exec
+ * URL para o formulário principal de Quests/Serviços.
  */
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9V95dWbdnuH-LxaQHEsvmyvjQTK05gLVXFNQcUmaSlE3NwJmxJmOtk9p4xXiNYaE8/exec';
 
 /**
- * Envia os dados para o Google Sheets.
- * Ordem esperada na planilha (Conforme sua solicitação):
- * A: Data/Hora
- * B: Quest
- * C: Level
- * D: Vocação
- * E: Pagamento
- * F: Local
- * G: Nome RL
- * H: Telefone
- * I: (Vazio)
- * J: Nome do Char
+ * URL para o formulário específico de Registro de Interesse de Itens (Encomendas).
+ */
+const ORDER_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQ6GE1vV1ZGzGFWmvgtlYpryJobVSFUBHXUuzpU2U6WwkVnW5OrJ3Cyya2Z_v8AiT5/exec';
+
+/**
+ * URL para leitura da aba "Controle Financeiro" via link de publicação CSV.
+ */
+const READ_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzShK__gBhMazxvWaX0pQ-RG18oiEFWE26XFOT2426bqLAQezj5fECdfhVPfcy0DKF7qjL7bVxSQFM/pub?output=csv';
+
+/**
+ * Envia os dados para o Google Sheets (Formulário de Inscrição de Quests).
  */
 export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => {
-  console.log('Ragha Service: Enviando dados para a planilha...', data);
-
+  console.log('Ragha Service: Enviando inscrição de quest...', data);
   try {
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
@@ -34,11 +31,71 @@ export const submitToGoogleSheets = async (data: FormData): Promise<boolean> => 
       },
       body: JSON.stringify(data),
     });
-
-    // Como o modo 'no-cors' não permite ler a resposta, assumimos sucesso se não houver erro de rede.
     return true;
   } catch (error) {
     console.error('Ragha Service Error:', error);
     return false;
+  }
+};
+
+/**
+ * Envia os dados para o Google Sheets (Registro de Interesse de Itens).
+ * Conforme solicitado, usa o novo script para Nome do Char, Item e Telefone.
+ */
+export const submitOrderToGoogleSheets = async (data: OrderData): Promise<boolean> => {
+  console.log('Ragha Service: Enviando registro de interesse de item...', data);
+  try {
+    await fetch(ORDER_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      cache: 'no-cache',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    return true;
+  } catch (error) {
+    console.error('Ragha Service Order Error:', error);
+    return false;
+  }
+};
+
+/**
+ * Busca a disponibilidade dos itens na aba Controle Financeiro.
+ */
+export const fetchAvailability = async (): Promise<string[]> => {
+  try {
+    const response = await fetch(READ_URL, {
+      method: 'GET',
+      cache: 'no-cache',
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const csvText = await response.text();
+    const lines = csvText.split(/\r?\n/);
+    const availableItems: string[] = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      if (!lines[i]) continue;
+      const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+        .map(cell => cell.replace(/^"(.*)"$/, '$1').trim());
+      
+      const itemName = row[7];
+      const soldStatus = row[10];
+      const isSelected = row[18];
+
+      if (itemName && (!soldStatus || soldStatus.trim() === "") && (isSelected === "TRUE" || isSelected === "true")) {
+        availableItems.push(itemName.toUpperCase());
+      }
+    }
+
+    return availableItems;
+  } catch (error) {
+    console.error('Ragha Service Stock Error:', error);
+    return [];
   }
 };

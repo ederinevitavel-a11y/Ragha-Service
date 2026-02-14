@@ -36,4 +36,10 @@ export interface FormData {
   phone: string;
 }
 
-export type AppTab = 'HOME' | 'FORM' | 'ABOUT' | 'TEAM';
+export interface OrderData {
+  charName: string;
+  itemName: string;
+  phone: string;
+}
+
+export type AppTab = 'HOME' | 'FORM' | 'ABOUT' | 'TEAM' | 'ORDERS';

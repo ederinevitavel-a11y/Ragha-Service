@@ -5,6 +5,7 @@ import HomeView from './components/HomeView';
 import RegistrationForm from './components/RegistrationForm';
 import AboutView from './components/AboutView';
 import TeamView from './components/TeamView';
+import OrdersView from './components/OrdersView';
 import { AppTab } from './types';
 
 const App: React.FC = () => {
@@ -45,7 +46,7 @@ const App: React.FC = () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-8 md:gap-12">
+          <div className="flex items-center gap-6 md:gap-10">
             <button 
               onClick={() => setActiveTab('HOME')}
               className={`font-gamer text-sm tracking-widest uppercase transition-all ${activeTab === 'HOME' ? 'text-[#00f2ff] neon-glow-blue' : 'text-gray-400 hover:text-white'}`}
@@ -58,6 +59,12 @@ const App: React.FC = () => {
             >
               NOSSO TIME
             </button>
+            <button 
+              onClick={() => setActiveTab('ORDERS')}
+              className={`font-gamer text-sm tracking-widest uppercase transition-all ${activeTab === 'ORDERS' ? 'text-[#39ff14] neon-glow-green' : 'text-gray-400 hover:text-white'}`}
+            >
+              ENCOMENDAS
+            </button>
           </div>
         </div>
       </nav>
@@ -68,6 +75,7 @@ const App: React.FC = () => {
         {activeTab === 'FORM' && <RegistrationForm onBack={() => setActiveTab('HOME')} />}
         {activeTab === 'ABOUT' && <AboutView onBack={() => setActiveTab('HOME')} />}
         {activeTab === 'TEAM' && <TeamView onBack={() => setActiveTab('HOME')} />}
+        {activeTab === 'ORDERS' && <OrdersView onBack={() => setActiveTab('HOME')} />}
       </main>
 
       {/* Footer */}
