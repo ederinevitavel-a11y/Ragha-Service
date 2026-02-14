@@ -139,10 +139,10 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout, onOrders }) => {
         className="fixed inset-0 pointer-events-none z-[-1] opacity-50"
       />
 
-      {/* MOBILE FLOATING ACTION BUTTON */}
+      {/* MOBILE FLOATING ACTION BUTTON - Adjusted to right-10 (approx 40px) */}
       <button 
         onClick={onOrders}
-        className="fixed bottom-6 right-6 md:hidden z-[100] group"
+        className="fixed bottom-6 right-10 md:hidden z-[100] group"
         aria-label="Ir para Encomendas"
       >
         <div className="absolute inset-[-10px] bg-[#39ff14]/20 rounded-full animate-ping pointer-events-none"></div>

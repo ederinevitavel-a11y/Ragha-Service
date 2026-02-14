@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   ChevronLeft, Package, Sparkles, User, 
   Phone, CheckCircle2, 
-  RefreshCw, AlertCircle, Hammer
+  RefreshCw, AlertCircle, Loader2, Search, Info
 } from 'lucide-react';
 import { OrderData } from '../types';
 import { fetchAvailability, submitOrderToGoogleSheets } from '../services/sheetsService';
@@ -63,7 +63,7 @@ const shopItems: ShopItem[] = [
   { id: 'soul8', name: 'SOULSHANKS', description: 'Calças de alma para Knights. Bônus de skills massivo.', price: '36,000', image: 'https://i.imgur.com/kRM8E2e.png', tag: 'LEGENDARY' },
   { id: 'soul10', name: 'SOULSHELL', description: 'A armadura pesada do Soul War para Knights de elite.', price: '40,000', image: 'https://i.imgur.com/HYdXLxz.png', tag: 'LEGENDARY' },
   { id: 'soul2', name: 'SOULSHREDDER', description: 'Machado de duas mãos que dilacera o espírito do inimigo.', price: '55,000', image: 'https://i.imgur.com/n7W3yWA.png', tag: 'LEGENDARY' },
-  { id: 'soul19', name: 'SOULSHROUD', description: 'Manto das sombras para proteção mística absoluta.', price: '37,000', image: 'https://i.imgur.com/6yg0yQy.png', tag: 'LEGENDARY' },
+  { id: 'soul19', name: 'SOULSHROUD', description: 'Manto das sombras para proteção mística absoluta.', price: '37,000', image: 'https://i.imgur.com/6yg0yQy.png', tag: 'MYTHIC' },
   { id: 'soul17', name: 'SOULSOLES', description: 'Botas de magos que permitem mobilidade mágica absoluta.', price: '30,000', image: 'https://i.imgur.com/ulUK6Tm.png', tag: 'LEGENDARY' },
   { id: 'soul9', name: 'SOULSTRIDER', description: 'Calças místicas para magos. Poder arcano em cada fibra.', price: '32,000', image: 'https://i.imgur.com/4ocXQoG.png', tag: 'LEGENDARY' },
   { id: 'soul20', name: 'SOULTAINTER', description: 'O cajado que corrompe a realidade. Poder absoluto para MS.', price: '48,000', image: 'https://i.imgur.com/icbhn8X.png', tag: 'LEGENDARY' },
@@ -74,9 +74,11 @@ const shopItems: ShopItem[] = [
 
 const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingStock, setIsLoadingStock] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [availableItems, setAvailableItems] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState<OrderData>({
     itemName: '',
     charName: '',
@@ -85,8 +87,10 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
 
   useEffect(() => {
     const loadStock = async () => {
+      setIsLoadingStock(true);
       const stock = await fetchAvailability();
       setAvailableItems(stock);
+      setIsLoadingStock(false);
     };
     loadStock();
   }, []);
@@ -122,8 +126,15 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
   };
 
   const isItemAvailable = (name: string) => {
-    return availableItems.includes(name.toUpperCase());
+    const normalizedName = name.toUpperCase().trim();
+    return availableItems.some(available => 
+      normalizedName.includes(available) || available.includes(normalizedName)
+    );
   };
+
+  const filteredItems = shopItems.filter(item => 
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const getItemTheme = (name: string) => {
     const upperName = name.toUpperCase();
@@ -155,7 +166,7 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 animate-[fadeIn_0.5s_ease-out]">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
         <div className="flex items-center gap-4">
           <button onClick={showForm ? () => setShowForm(false) : onBack} className="p-2.5 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white transition-all backdrop-blur-md">
             <ChevronLeft className="w-5 h-5" />
@@ -172,15 +183,12 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
 
         {!showForm && !isSuccess && (
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 px-6 py-3 bg-amber-500/10 border border-amber-500/30 rounded-xl shadow-[0_0_20px_rgba(251,191,36,0.1)] group">
-              <div className="relative">
-                <Hammer className="w-4 h-4 text-amber-500 animate-[bounce_2s_infinite]" />
-                <div className="absolute inset-0 bg-amber-500 blur-md opacity-20"></div>
+            {isLoadingStock && (
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl">
+                <Loader2 className="w-4 h-4 text-[#00f2ff] animate-spin" />
+                <span className="text-[10px] font-gamer text-gray-400 uppercase tracking-widest">Sincronizando Estoque...</span>
               </div>
-              <span className="text-[10px] font-gamer font-bold text-amber-500 uppercase tracking-[0.2em] whitespace-nowrap">
-                Página em Construção
-              </span>
-            </div>
+            )}
           </div>
         )}
       </div>
@@ -243,8 +251,8 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
            </div>
         </div>
       ) : (
-        <div className="space-y-12">
-          {/* Info Banner */}
+        <div className="space-y-8">
+          {/* Main Info Banner */}
           <div className="bg-[#0a0a0c]/80 backdrop-blur-xl border border-[#39ff14]/20 rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden group max-w-5xl mx-auto">
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
               <div className="w-14 h-14 rounded-xl bg-[#39ff14]/10 border border-[#39ff14]/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(57,255,20,0.1)]">
@@ -258,71 +266,120 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
             </div>
           </div>
 
-          {/* Items Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {shopItems.map((item) => {
-              const available = isItemAvailable(item.name);
-              const theme = getItemTheme(item.name);
-              return (
-                <div 
-                  key={item.id} 
-                  className={`bg-[#0b0e14] border border-white/5 rounded-2xl overflow-hidden group flex flex-col h-full transition-all duration-300 relative ${theme.hoverBorder} ${theme.hoverShadow}`}
-                >
-                  
-                  {/* Stock Badge */}
-                  {available && (
-                    <div className="absolute top-4 right-4 z-20 px-3 py-1 bg-[#39ff14]/10 border border-[#39ff14]/40 rounded-full flex items-center gap-1.5 shadow-[0_0_15px_rgba(57,255,20,0.2)] animate-pulse">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#39ff14] shadow-[0_0_8px_#39ff14]"></div>
-                      <span className="text-[7px] font-gamer font-bold text-[#39ff14] uppercase tracking-widest">A Pronta Entrega</span>
-                    </div>
-                  )}
+          {/* Destaque de Segurança de Encomenda */}
+          <div className="max-w-5xl mx-auto animate-[fadeIn_0.8s_ease-out]">
+            <div className="bg-gradient-to-r from-[#39ff14]/10 via-[#39ff14]/5 to-transparent border-l-4 border-[#39ff14] p-5 rounded-r-2xl flex items-start gap-4 shadow-lg group">
+              <div className="p-2.5 rounded-lg bg-[#39ff14]/10 text-[#39ff14] flex-shrink-0 group-hover:scale-110 transition-transform">
+                <Info className="w-5 h-5" />
+              </div>
+              <p className="text-sm md:text-base text-gray-100 font-medium leading-relaxed">
+                <span className="text-[#39ff14] font-gamer font-bold tracking-widest uppercase text-xs block mb-1">Fique tranquilo!</span>
+                Ao encomendar um item você <span className="text-[#39ff14] font-bold">não gera obrigação de compra</span>, apenas queremos saber o que os nossos clientes precisam para oferecer as melhores oportunidades!
+              </p>
+            </div>
+          </div>
 
-                  {/* Header Card */}
-                  <div className="p-5 pb-0">
-                    <div className={`text-[8px] font-gamer font-bold px-2.5 py-1 rounded tracking-widest inline-block mb-8 ${item.tag === 'MYTHIC' ? 'bg-amber-500/10 border border-amber-500/30 text-amber-500' : 'bg-[#ff4d00]/10 border border-[#ff4d00]/30 text-[#ff4d00]'}`}>
-                      {item.tag}
-                    </div>
+          {/* Filtro de Pesquisa - Alinhado à DIREITA acima dos cards */}
+          <div className="flex justify-end pt-4 animate-[fadeIn_0.6s_ease-out]">
+            <div className="max-w-md w-full relative group">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-[#00f2ff] transition-colors">
+                <Search className="w-4 h-4" />
+              </div>
+              <input 
+                type="text" 
+                placeholder="BUSCAR ITEM NA VITRINE..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="bg-[#0a0a0c]/80 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-xs font-gamer text-white focus:outline-none focus:border-[#00f2ff]/50 focus:ring-2 focus:ring-[#00f2ff]/10 transition-all w-full tracking-widest placeholder:text-gray-700"
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <div className="px-2 py-1 rounded bg-white/5 border border-white/10 text-[8px] font-gamer text-gray-600 uppercase">
+                  {filteredItems.length} Result.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Items Grid */}
+          {filteredItems.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-4">
+              {filteredItems.map((item) => {
+                const available = isItemAvailable(item.name);
+                const theme = getItemTheme(item.name);
+                return (
+                  <div 
+                    key={item.id} 
+                    className={`bg-[#0b0e14] border border-white/5 rounded-2xl overflow-hidden group flex flex-col h-full transition-all duration-300 relative ${theme.hoverBorder} ${theme.hoverShadow}`}
+                  >
                     
-                    {/* Moldura de Item (Slot Style) */}
-                    <div className="relative h-40 w-40 mx-auto flex items-center justify-center">
-                      <div className="absolute inset-0 border border-white/10 rounded-xl flex items-center justify-center overflow-hidden bg-black/20 group-hover:bg-black/40 transition-colors">
-                         {/* Background aura */}
-                         <div className={`absolute inset-2 ${available ? 'bg-[#39ff14]/5' : 'bg-blue-500/5'} rounded-full blur-[30px] group-hover:opacity-100 transition-opacity`}></div>
-                         <img 
-                            src={item.image} 
-                            alt={item.name} 
-                            className="w-20 h-20 object-contain relative z-10 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_15px_rgba(0,242,255,0.2)]" 
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = 'https://www.tibiawiki.com.br/images/a/af/Tibia_Icon.gif';
-                            }}
-                         />
+                    {/* Stock Badge */}
+                    {available && (
+                      <div className="absolute top-4 right-4 z-20 px-3 py-1 bg-[#39ff14]/10 border border-[#39ff14]/40 rounded-full flex items-center gap-1.5 shadow-[0_0_15px_rgba(57,255,20,0.2)] animate-pulse">
+                        <div className="w-2 h-2 rounded-full bg-[#39ff14] shadow-[0_0_8px_#39ff14]"></div>
+                        <span className="text-[7px] font-gamer font-bold text-[#39ff14] uppercase tracking-widest">PRONTA ENTREGA</span>
+                      </div>
+                    )}
+
+                    {/* Header Card */}
+                    <div className="p-5 pb-0">
+                      <div className={`text-[8px] font-gamer font-bold px-2.5 py-1 rounded tracking-widest inline-block mb-8 ${item.tag === 'MYTHIC' ? 'bg-amber-500/10 border border-amber-500/30 text-amber-500' : 'bg-[#ff4d00]/10 border border-[#ff4d00]/30 text-[#ff4d00]'}`}>
+                        {item.tag}
+                      </div>
+                      
+                      {/* Moldura de Item */}
+                      <div className="relative h-40 w-40 mx-auto flex items-center justify-center">
+                        <div className="absolute inset-0 border border-white/10 rounded-xl flex items-center justify-center overflow-hidden bg-black/20 group-hover:bg-black/40 transition-colors">
+                           <div className={`absolute inset-2 ${available ? 'bg-[#39ff14]/5' : 'bg-blue-500/5'} rounded-full blur-[30px] group-hover:opacity-100 transition-opacity`}></div>
+                           <img 
+                              src={item.image} 
+                              alt={item.name} 
+                              className="w-20 h-20 object-contain relative z-10 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_15px_rgba(0,242,255,0.2)]" 
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://www.tibiawiki.com.br/images/a/af/Tibia_Icon.gif';
+                              }}
+                           />
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Content */}
-                  <div className="px-5 mt-6 flex-grow flex flex-col items-center text-center">
-                    <h4 className={`font-gamer font-bold text-white text-base tracking-tighter mb-2 transition-colors duration-300 uppercase ${theme.hoverText}`}>
-                      {item.name}
-                    </h4>
-                    <p className="text-[10px] text-gray-500 leading-relaxed font-medium mb-6 line-clamp-2">
-                      {item.description}
-                    </p>
-                  </div>
+                    {/* Content */}
+                    <div className="px-5 mt-6 flex-grow flex flex-col items-center text-center">
+                      <h4 className={`font-gamer font-bold text-white text-base tracking-tighter mb-2 transition-colors duration-300 uppercase ${theme.hoverText}`}>
+                        {item.name}
+                      </h4>
+                      <p className="text-[10px] text-gray-500 leading-relaxed font-medium mb-6 line-clamp-2">
+                        {item.description}
+                      </p>
+                    </div>
 
-                  {/* Footer Card - Price removed and Button centralized */}
-                  <div className="p-5 pt-4 border-t border-white/5 mt-auto bg-black/10 flex justify-center">
-                    <button 
-                      onClick={() => handleBuyNow(item)}
-                      className={`w-full max-w-[160px] py-2.5 ${available ? 'bg-gradient-to-br from-[#39ff14] to-green-600 text-black' : 'bg-gradient-to-br from-blue-600 to-blue-500 text-white'} font-gamer font-bold text-[8px] tracking-widest rounded-lg shadow-lg hover:scale-105 active:scale-95 transition-all uppercase`}
-                    >
-                      {available ? 'COMPRAR JÁ' : 'ENCOMENDAR'}
-                    </button>
+                    {/* Footer Card */}
+                    <div className="p-5 pt-4 border-t border-white/5 mt-auto bg-black/10 flex justify-center">
+                      <button 
+                        onClick={() => handleBuyNow(item)}
+                        className={`w-full max-w-[160px] py-2.5 ${available ? 'bg-gradient-to-br from-[#39ff14] to-green-600 text-black shadow-[0_0_15px_rgba(57,255,20,0.3)]' : 'bg-gradient-to-br from-blue-600 to-blue-500 text-white'} font-gamer font-bold text-[8px] tracking-widest rounded-lg hover:scale-105 active:scale-95 transition-all uppercase`}
+                      >
+                        {available ? 'COMPRAR JÁ' : 'ENCOMENDAR'}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="py-20 text-center animate-[fadeIn_0.5s_ease-out]">
+              <div className="p-6 rounded-full bg-white/5 border border-white/10 inline-flex mb-6">
+                <Search className="w-10 h-10 text-gray-600" />
+              </div>
+              <h4 className="font-gamer font-bold text-white text-xl uppercase tracking-widest mb-2">Nenhum item encontrado</h4>
+              <p className="text-gray-500 text-sm">Tente buscar por um termo diferente ou limpe o filtro.</p>
+              <button 
+                onClick={() => setSearchTerm('')}
+                className="mt-6 text-[#00f2ff] font-gamer text-[10px] uppercase tracking-widest hover:underline"
+              >
+                Limpar Filtro
+              </button>
+            </div>
+          )}
         </div>
       )}
       <style>{`
