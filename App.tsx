@@ -46,7 +46,7 @@ const App: React.FC = () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-6 md:gap-10">
+          <div className="flex items-center gap-8">
             <button 
               onClick={() => setActiveTab('HOME')}
               className={`font-gamer text-sm tracking-widest uppercase transition-all ${activeTab === 'HOME' ? 'text-[#00f2ff] neon-glow-blue' : 'text-gray-400 hover:text-white'}`}
@@ -59,19 +59,19 @@ const App: React.FC = () => {
             >
               NOSSO TIME
             </button>
-            <button 
-              onClick={() => setActiveTab('ORDERS')}
-              className={`font-gamer text-sm tracking-widest uppercase transition-all ${activeTab === 'ORDERS' ? 'text-[#39ff14] neon-glow-green' : 'text-gray-400 hover:text-white'}`}
-            >
-              ENCOMENDAS
-            </button>
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
       <main className="flex-grow relative z-10 pt-24 pb-20">
-        {activeTab === 'HOME' && <HomeView onStart={() => setActiveTab('FORM')} onAbout={() => setActiveTab('ABOUT')} />}
+        {activeTab === 'HOME' && (
+          <HomeView 
+            onStart={() => setActiveTab('FORM')} 
+            onAbout={() => setActiveTab('ABOUT')} 
+            onOrders={() => setActiveTab('ORDERS')}
+          />
+        )}
         {activeTab === 'FORM' && <RegistrationForm onBack={() => setActiveTab('HOME')} />}
         {activeTab === 'ABOUT' && <AboutView onBack={() => setActiveTab('HOME')} />}
         {activeTab === 'TEAM' && <TeamView onBack={() => setActiveTab('HOME')} />}

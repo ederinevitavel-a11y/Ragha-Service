@@ -1,13 +1,14 @@
 
 import React, { useEffect, useRef } from 'react';
-import { ArrowRight, Sparkles, ShieldCheck, Zap, Cpu, Wand2, Shield, Snowflake } from 'lucide-react';
+import { ArrowRight, Sparkles, ShieldCheck, Zap, Cpu, Wand2, Shield, Snowflake, ShoppingBag } from 'lucide-react';
 
 interface HomeViewProps {
   onStart: () => void;
   onAbout: () => void;
+  onOrders: () => void;
 }
 
-const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
+const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout, onOrders }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
 
@@ -138,6 +139,20 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
         className="fixed inset-0 pointer-events-none z-[-1] opacity-50"
       />
 
+      {/* MOBILE FLOATING ACTION BUTTON */}
+      <button 
+        onClick={onOrders}
+        className="fixed bottom-6 right-6 md:hidden z-[100] group"
+        aria-label="Ir para Encomendas"
+      >
+        <div className="absolute inset-[-10px] bg-[#39ff14]/20 rounded-full animate-ping pointer-events-none"></div>
+        <div className="absolute inset-[-4px] bg-[#39ff14]/30 rounded-full animate-pulse pointer-events-none"></div>
+        <div className="relative w-16 h-16 bg-[#39ff14] text-black rounded-full flex items-center justify-center shadow-[0_0_25px_rgba(57,255,20,0.6)] active:scale-90 transition-all">
+          <ShoppingBag className="w-7 h-7" />
+          <span className="absolute -top-1 -right-1 bg-white text-black text-[8px] font-gamer font-bold px-1.5 py-0.5 rounded-full shadow-lg">BIS</span>
+        </div>
+      </button>
+
       <div className="flex flex-col lg:flex-row items-center gap-12 py-10">
         {/* Text Section */}
         <div className="flex-1 text-center lg:text-left space-y-8 animate-[fadeIn_0.8s_ease-out]">
@@ -170,12 +185,10 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
               Tem interesse? Só preencher nosso formulário de solicitação. <br />
               <span className="text-[#39ff14] font-medium italic">Nosso time está preparado para realizar o melhor service que o seu char poderia ter!</span>
             </p>
-            <p className="text-xl flex items-center justify-center lg:justify-start gap-2 text-white font-gamer tracking-widest uppercase text-xs">
-              Confiança e o nome de sempre! <span className="w-8 h-[1px] bg-[#00f2ff]"></span>
-            </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+          {/* CTAs Section */}
+          <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center lg:justify-start pt-4">
             <button 
               onClick={onStart}
               className="group relative px-8 py-4 bg-[#00f2ff] text-black font-gamer font-bold tracking-widest uppercase rounded-lg overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(0,242,255,0.4)]"
@@ -185,6 +198,17 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
                 START SERVICE <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </span>
             </button>
+
+            {/* DESKTOP ENCOMENDAS CTA */}
+            <button 
+              onClick={onOrders}
+              className="group relative px-8 py-4 bg-transparent border-2 border-[#39ff14] text-[#39ff14] font-gamer font-bold tracking-widest uppercase rounded-lg overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(57,255,20,0.2)] hover:bg-[#39ff14] hover:text-black"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                <ShoppingBag className="w-5 h-5" /> ENCOMENDAS
+              </span>
+            </button>
+
             <button 
               onClick={onAbout}
               className="px-8 py-4 border border-gray-700 text-white font-gamer tracking-widest uppercase rounded-lg hover:border-[#00f2ff] hover:text-[#00f2ff] transition-all"
@@ -192,6 +216,10 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout }) => {
               SAIBA MAIS
             </button>
           </div>
+
+          <p className="text-xl flex items-center justify-center lg:justify-start gap-2 text-white/40 font-gamer tracking-widest uppercase text-[10px]">
+            Confiança e o nome de sempre! <span className="w-8 h-[1px] bg-[#00f2ff]/30"></span>
+          </p>
         </div>
 
         {/* Brand Visualization (PROCESSED CHIP Style) */}
