@@ -215,8 +215,14 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
               </h3>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <OrderField icon={<Package />} label="ITEM DESEJADO *" color="#39ff14">
-                  <input required name="itemName" placeholder="Ex: Sanguine Blade" value={formData.itemName} onChange={handleChange}
-                    className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
+                  <input 
+                    required 
+                    readOnly
+                    name="itemName" 
+                    placeholder="Ex: Sanguine Blade" 
+                    value={formData.itemName} 
+                    className="w-full bg-transparent text-white/70 font-bold placeholder:text-gray-700 focus:outline-none text-sm cursor-not-allowed" 
+                  />
                 </OrderField>
 
                 <OrderField icon={<User />} label="NOME DO SEU CHAR *" color="#bc13fe">

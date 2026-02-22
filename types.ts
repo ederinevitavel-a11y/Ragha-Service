@@ -42,4 +42,4 @@ export interface OrderData {
   phone: string;
 }
 
-export type AppTab = 'HOME' | 'FORM' | 'ABOUT' | 'TEAM' | 'ORDERS';
+export type AppTab = 'HOME' | 'FORM' | 'ABOUT' | 'TEAM' | 'ORDERS' | 'PARTNERS';
