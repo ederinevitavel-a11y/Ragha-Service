@@ -1,11 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
-import { Shield, Swords, Zap, Database } from 'lucide-react';
+import { Shield, Swords, Database } from 'lucide-react';
+import Logo from './components/Logo';
 import HomeView from './components/HomeView';
 import RegistrationForm from './components/RegistrationForm';
 import AboutView from './components/AboutView';
 import TeamView from './components/TeamView';
 import OrdersView from './components/OrdersView';
+import PartnersView from './components/PartnersView';
 import { AppTab } from './types';
 
 const App: React.FC = () => {
@@ -38,7 +40,7 @@ const App: React.FC = () => {
           >
             <div className="w-10 h-10 bg-gradient-to-br from-[#00f2ff] to-[#bc13fe] rounded-lg flex items-center justify-center p-0.5 shadow-lg group-hover:scale-110 transition-transform">
               <div className="w-full h-full bg-[#050505] rounded-[6px] flex items-center justify-center">
-                < Zap className="w-6 h-6 text-[#00f2ff]" />
+                <Logo className="w-6 h-6" />
               </div>
             </div>
             <span className="font-gamer text-xl tracking-tighter text-white group-hover:neon-glow-blue transition-all">
@@ -70,12 +72,14 @@ const App: React.FC = () => {
             onStart={() => setActiveTab('FORM')} 
             onAbout={() => setActiveTab('ABOUT')} 
             onOrders={() => setActiveTab('ORDERS')}
+            onPartners={() => setActiveTab('PARTNERS')}
           />
         )}
         {activeTab === 'FORM' && <RegistrationForm onBack={() => setActiveTab('HOME')} />}
         {activeTab === 'ABOUT' && <AboutView onBack={() => setActiveTab('HOME')} />}
         {activeTab === 'TEAM' && <TeamView onBack={() => setActiveTab('HOME')} />}
         {activeTab === 'ORDERS' && <OrdersView onBack={() => setActiveTab('HOME')} />}
+        {activeTab === 'PARTNERS' && <PartnersView onBack={() => setActiveTab('HOME')} />}
       </main>
 
       {/* Footer */}
