@@ -1,98 +1,146 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
-  ChevronLeft, Package, Sparkles, User, 
-  Phone, CheckCircle2, 
-  RefreshCw, AlertCircle, Loader2, Search, Info
+  Shield, Coins, Map as MapIcon, 
+  ChevronLeft, CheckCircle2, 
+  Trophy, Sparkles, Send,
+  Zap, User, Phone, ChevronDown, CheckSquare, Square,
+  ClipboardList, Gift, AlertCircle, FileText, Info, RefreshCw
 } from 'lucide-react';
-import { OrderData } from '../types';
-import { fetchAvailability, submitOrderToGoogleSheets } from '../services/sheetsService';
+import { FormData, Vocation, Quest, PaymentMethod, ServiceLocation } from '../types';
+import { submitToGoogleSheets } from '../services/sheetsService';
 
-interface OrdersViewProps {
+interface RegistrationFormProps {
   onBack: () => void;
 }
 
-interface ShopItem {
-  id: string;
+interface ThemeConfig {
   name: string;
-  description: string;
-  price: string;
-  image: string;
-  tag: string;
+  color: string;
+  glow: string;
+  secondary: string;
 }
 
-const shopItems: ShopItem[] = [
-  { id: 'ali1', name: 'ALICORN HEADGUARD', description: 'O elmo divino para Royal Paladins. Proteção e Distance BiS.', price: '24,000', image: 'https://i.imgur.com/DmSk97Y.png', tag: 'LEGENDARY' },
-  { id: 'ali3', name: 'ALICORN QUIVER', description: 'Aljava infinita de luz. O acessório definitivo para arqueiros.', price: '18,000', image: 'https://i.imgur.com/tJPczV7.png', tag: 'LEGENDARY' },
-  { id: 'ali2', name: 'ALICORN RING', description: 'Anel de pureza divina. Regeneração e skills para Paladins.', price: '65,000', image: 'https://i.imgur.com/QPmS9LQ.png', tag: 'LEGENDARY' },
-  { id: 'arb1', name: 'ARBOREAL CROWN', description: 'A coroa mística das profundezas da floresta ancestral. Concede sabedoria e bônus de skills elementais.', price: '22,000', image: 'https://i.imgur.com/jz7oVzm.png', tag: 'LEGENDARY' },
-  { id: 'arc3', name: 'ARCANOMANCER FOLIO', description: 'Grimório de segredos proibidos. Amplifica feitiços elementais.', price: '22,000', image: 'https://i.imgur.com/Zk4Hrpn.png', tag: 'LEGENDARY' },
-  { id: 'arc2', name: 'ARCANOMANCER REGALIA', description: 'Vestimenta de gala dos grandes magos. Proteção e mana.', price: '30,000', image: 'https://i.imgur.com/M1eSjMb.png', tag: 'LEGENDARY' },
-  { id: 'arc1', name: 'ARCANOMANCER SIGIL', description: 'Selo de maestria arcana. Bônus de Magic Level insano.', price: '62,000', image: 'https://i.imgur.com/L04I5rS.png', tag: 'LEGENDARY' },
-  { id: 'eth1', name: 'ETHEREAL CONED HAT', description: 'O chapéu místico das dimensões etéreas. Amplificação de Magic Level.', price: '55,000', image: 'https://i.imgur.com/T8cHDF9.png', tag: 'LEGENDARY' },
-  { id: 'eth2', name: 'ETHEREAL RING', description: 'Um anel que ressoa com o plano espiritual. Concede bônus de skills.', price: '60,000', image: 'https://i.imgur.com/nveChSJ.png', tag: 'LEGENDARY' },
-  { id: 'soul6', name: 'PAIR OF SOULSTALKERS', description: 'Botas de rastreador de almas para Paladins ágeis.', price: '40,000', image: 'https://i.imgur.com/UgzIXIW.png', tag: 'LEGENDARY' },
-  { id: 'soul7', name: 'PAIR OF SOULWALKERS', description: 'Botas de Knight focadas em defesa física pesada.', price: '38,000', image: 'https://i.imgur.com/ZusXE70.png', tag: 'LEGENDARY' },
-  { id: 'sang6', name: 'SANGUINE BATTLEAXE', description: 'Machado de duas mãos para Knights. Esmaga qualquer defesa.', price: '42,000', image: 'https://i.imgur.com/LBozI41.png', tag: 'LEGENDARY' },
-  { id: 'sang1', name: 'SANGUINE BLADE', description: 'A espada BiS de uma mão para Knights. Poder ofensivo devastador.', price: '45,000', image: 'https://i.imgur.com/6dyQPXE.png', tag: 'LEGENDARY' },
-  { id: 'sang11', name: 'SANGUINE BLUDGEON', description: 'Clava pesada de Rotten Blood. Impacto espiritual massivo.', price: '41,000', image: 'https://i.imgur.com/7x6vkq4.png', tag: 'LEGENDARY' },
-  { id: 'sang10', name: 'SANGUINE BOOTS', description: 'Botas de metal banhadas em sangue para Knights.', price: '26,000', image: 'https://i.imgur.com/L6rK3jl.png', tag: 'LEGENDARY' },
-  { id: 'sang3', name: 'SANGUINE BOW', description: 'Arco BiS para Royal Paladins. Precisão cirúrgica e dano massivo.', price: '72,000', image: 'https://i.imgur.com/U02WbSJ.png', tag: 'LEGENDARY' },
-  { id: 'sang12', name: 'SANGUINE CLAWS', description: 'Garras de combate para ataques rápidos e sangrentos.', price: '33,000', image: 'https://i.imgur.com/w8FKCov.png', tag: 'LEGENDARY' },
-  { id: 'sang8', name: 'SANGUINE COIL', description: 'O amuleto místico de Rotten Blood. Proteção contra as trevas.', price: '25,000', image: 'https://i.imgur.com/HpFADxB.png', tag: 'LEGENDARY' },
-  { id: 'sang7', name: 'SANGUINE CROSSBOW', description: 'Besta pesada de elite. Perfuração de alma em cada disparo.', price: '65,000', image: 'https://i.imgur.com/Q2Jb64Z.png', tag: 'LEGENDARY' },
-  { id: 'sang13', name: 'SANGUINE CUDGEL', description: 'Clava de uma mão para combatentes de elite.', price: '34,000', image: 'https://i.imgur.com/Wu69fOw.png', tag: 'LEGENDARY' },
-  { id: 'sang5', name: 'SANGUINE GALOSHES', description: 'Botas de Rotten Blood. Velocidade e proteção elemental superior.', price: '28,000', image: 'https://i.imgur.com/UdkdeCR.png', tag: 'LEGENDARY' },
-  { id: 'sang4', name: 'SANGUINE GREAVES', description: 'As calças mais fortes do jogo para Knights. Defesa absoluta.', price: '38,000', image: 'https://i.imgur.com/2wjnBsK.png', tag: 'LEGENDARY' },
-  { id: 'sang14', name: 'SANGUINE HATCHET', description: 'Machadinha veloz imbuída com energia de Rotten Blood.', price: '31,000', image: 'https://i.imgur.com/zyp1jTV.png', tag: 'LEGENDARY' },
-  { id: 'sang9', name: 'SANGUINE LEGS', description: 'Proteção de pernas para Paladins e Mages. Atributos BiS.', price: '30,000', image: 'https://i.imgur.com/zQABaNx.png', tag: 'LEGENDARY' },
-  { id: 'sang15', name: 'SANGUINE RAZOR', description: 'Lâmina afiada para cortes precisos e hemorragia crítica.', price: '35,000', image: 'https://i.imgur.com/wAUlLlO.png', tag: 'LEGENDARY' },
-  { id: 'sang2', name: 'SANGUINE ROD', description: 'O cajado supremo para Druids. Amplificação mística.', price: '32,000', image: 'https://i.imgur.com/L2M4rls.png', tag: 'LEGENDARY' },
-  { id: 'sang16', name: 'SANGUINE TROUSERS', description: 'Calças leves com alto poder de regeneração mágica.', price: '29,000', image: 'https://i.imgur.com/9KqgJ8Y.png', tag: 'LEGENDARY' },
-  { id: 'soul4', name: 'SOULBASTION', description: 'O escudo que bloca o impensável. Essencial para blocar bosses.', price: '35,000', image: 'https://i.imgur.com/RKvowa2.png', tag: 'LEGENDARY' },
-  { id: 'soul15', name: 'SOULBITER', description: 'Uma clava de duas mãos pesada que ressoa com almas.', price: '31,000', image: 'https://i.imgur.com/EmishyU.png', tag: 'LEGENDARY' },
-  { id: 'soul1', name: 'SOULBLEEDER', description: 'O arco de almas. Precisão letal que ignora defesas físicas.', price: '75,000', image: 'https://i.imgur.com/ekZ6x0D.png', tag: 'LEGENDARY' },
-  { id: 'soul13', name: 'SOULCRUSHER', description: 'A clava de uma mão mais poderosa. Esmaga ossos e almas.', price: '33,000', image: 'https://i.imgur.com/8ddkSzE.png', tag: 'LEGENDARY' },
-  { id: 'soul14', name: 'SOULCUTTER', description: 'A espada de uma mão preferida pelos duelistas ágeis.', price: '34,000', image: 'https://i.imgur.com/ceEPRMl.png', tag: 'LEGENDARY' },
-  { id: 'soul12', name: 'SOULEATER (AXE)', description: 'Machado de uma mão veloz que drena a vida dos oponentes.', price: '34,000', image: 'https://i.imgur.com/5fsOUW0.png', tag: 'LEGENDARY' },
-  { id: 'soul18', name: 'SOULGARB', description: 'Traje cerimonial de alma com altíssima proteção elemental.', price: '39,000', image: 'https://i.imgur.com/JM9c2gH.png', tag: 'LEGENDARY' },
-  { id: 'soul5', name: 'SOULHEXER', description: 'O cajado supremo para mestres das artes negras.', price: '42,000', image: 'https://i.imgur.com/EOiUh2x.png', tag: 'LEGENDARY' },
-  { id: 'soul16', name: 'SOULKAMAS', description: 'Lâminas exóticas com poder espiritual latente.', price: '28,000', image: 'https://i.imgur.com/GK6lCYP.png', tag: 'LEGENDARY' },
-  { id: 'soul3', name: 'SOULMANTLE', description: 'Capa mística de proteção espiritual para magos de elite.', price: '42,000', image: 'https://i.imgur.com/Lf9jRGr.png', tag: 'LEGENDARY' },
-  { id: 'soul11', name: 'SOULPIERCER', description: 'A besta definitiva para Royal Paladins. Perfuração total.', price: '68,000', image: 'https://i.imgur.com/xIEmnmn.png', tag: 'LEGENDARY' },
-  { id: 'soul8', name: 'SOULSHANKS', description: 'Calças de alma para Knights. Bônus de skills massivo.', price: '36,000', image: 'https://i.imgur.com/kRM8E2e.png', tag: 'LEGENDARY' },
-  { id: 'soul10', name: 'SOULSHELL', description: 'A armadura pesada do Soul War para Knights de elite.', price: '40,000', image: 'https://i.imgur.com/HYdXLxz.png', tag: 'LEGENDARY' },
-  { id: 'soul2', name: 'SOULSHREDDER', description: 'Machado de duas mãos que dilacera o espírito do inimigo.', price: '55,000', image: 'https://i.imgur.com/n7W3yWA.png', tag: 'LEGENDARY' },
-  { id: 'soul19', name: 'SOULSHROUD', description: 'Manto das sombras para proteção mística absoluta.', price: '37,000', image: 'https://i.imgur.com/6yg0yQy.png', tag: 'MYTHIC' },
-  { id: 'soul17', name: 'SOULSOLES', description: 'Botas de magos que permitem mobilidade mágica absoluta.', price: '30,000', image: 'https://i.imgur.com/ulUK6Tm.png', tag: 'LEGENDARY' },
-  { id: 'soul9', name: 'SOULSTRIDER', description: 'Calças místicas para magos. Poder arcano em cada fibra.', price: '32,000', image: 'https://i.imgur.com/4ocXQoG.png', tag: 'LEGENDARY' },
-  { id: 'soul20', name: 'SOULTAINTER', description: 'O cajado que corrompe a realidade. Poder absoluto para MS.', price: '48,000', image: 'https://i.imgur.com/icbhn8X.png', tag: 'LEGENDARY' },
-  { id: 'spirit1', name: 'SPIRITTHORN ARMOR', description: 'A armadura de espinhos sagrados. Defesa e contra-ataque.', price: '55,000', image: 'https://i.imgur.com/W1xhnUf.png', tag: 'MYTHIC' },
-  { id: 'spirit2', name: 'SPIRITTHORN HELMET', description: 'Elmo ancestral de Knights. Atributos de skills massivos.', price: '45,000', image: 'https://i.imgur.com/lRZ8XiE.png', tag: 'MYTHIC' },
-  { id: 'spirit3', name: 'SPIRITTHORN RING', description: 'Anel místico de espinhos. O melhor anel defensivo para EK.', price: '68,000', image: 'https://i.imgur.com/0zOMXYC.png', tag: 'MYTHIC' }
-];
+const themes: Record<string, ThemeConfig> = {
+  [Quest.ROTTEN_BLOOD]: {
+    name: 'ROTTEN BLOOD',
+    color: '#ff0000',
+    glow: 'rgba(255, 0, 0, 0.6)',
+    secondary: '#450a0a',
+  },
+  [Quest.PRIMAL_ORDEAL]: {
+    name: 'PRIMAL ORDEAL',
+    color: '#fbbf24', 
+    glow: 'rgba(251, 191, 36, 0.6)',
+    secondary: '#451a03',
+  },
+  [Quest.SOUL_WAR]: {
+    name: 'SOUL WAR',
+    color: '#a855f7',
+    glow: 'rgba(168, 85, 247, 0.6)',
+    secondary: '#2e1065',
+  },
+  [Quest.GRAVEBORN]: {
+    name: 'GRAVEBORN',
+    color: '#00f2ff',
+    glow: 'rgba(0, 242, 255, 0.6)',
+    secondary: '#083344',
+  },
+  'DEFAULT': {
+    name: 'ESCOLHA SUA JORNADA',
+    color: '#ffffff',
+    glow: 'rgba(255, 255, 255, 0.1)',
+    secondary: '#111111',
+  }
+};
 
-const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
+const questIcons: Record<string, string> = {
+  [Quest.ROTTEN_BLOOD]: '🩸',
+  [Quest.PRIMAL_ORDEAL]: '👾',
+  [Quest.SOUL_WAR]: '👻',
+  [Quest.GRAVEBORN]: '⚰️'
+};
+
+const vocationIcons: Record<string, string> = {
+  [Vocation.EK]: '⚔️',
+  [Vocation.ED]: '❄️',
+  [Vocation.MS]: '🔥',
+  [Vocation.EX_MONK]: '👊',
+  [Vocation.RP]: '🏹'
+};
+
+const paymentIcons: Record<string, string> = {
+  [PaymentMethod.COINS]: '🤑',
+  [PaymentMethod.PERCENTAGE]: '💰',
+  [PaymentMethod.CLOSED_PT]: '👥'
+};
+
+const locationIcons: Record<string, string> = {
+  [ServiceLocation.KALIBRA]: '🌏',
+  [ServiceLocation.OTHER]: '🪐'
+};
+
+const questInfo: Record<string, { requirements: string[], vocations: string[], rewards: string[], note?: string }> = {
+  [Quest.ROTTEN_BLOOD]: {
+    requirements: ['5kk para a entrada ou 2 Bloody Tears', '3kk por tentativa (Refill)'],
+    vocations: ['⚔️ EK 650+', '❄️ ED 450+', '🔥 MS 450+', '🏹 RP 550+', '👊 EM 500+'],
+    rewards: ['🥇 Sanguine Item bis (aleatório)', '1️⃣ Chance de Double Bag']
+  },
+  [Quest.PRIMAL_ORDEAL]: {
+    requirements: ['Within The Tides Quest completa', '6kk para os 12 dias (Refill)'],
+    vocations: ['⚔️ EK 500+', '❄️ ED 400+', '🔥 MS 400+', '🏹 RP 400+', '👊 EM 450+'],
+    rewards: ['1️⃣ Primal Item bis (aleatório)']
+  },
+  [Quest.SOUL_WAR]: {
+    requirements: ['Feaster of Souls Quest completa', '5kk (Refill)'],
+    vocations: ['⚔️ EK 500+', '❄️ ED 300+', '🔥 MS 300+', '🏹 RP 300+', '👊 EM 450+'],
+    rewards: ['1️⃣ Soul Item bis (aleatório)']
+  },
+  [Quest.GRAVEBORN]: {
+    requirements: ['2kk (Refill)'],
+    vocations: ['⚔️ EK 700+', '❄️ ED 700+', '🔥 MS 700+', '🏹 RP 700+', '👊 EM 700+'],
+    rewards: ['1️⃣ Crypt Rune aleatória'],
+    note: 'Acesso a Draconia e hunts exclusivas.'
+  }
+};
+
+const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoadingStock, setIsLoadingStock] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [showForm, setShowForm] = useState(false);
-  const [availableItems, setAvailableItems] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [formData, setFormData] = useState<OrderData>({
-    itemName: '',
+  const [activeThemeKey, setActiveThemeKey] = useState<string>('DEFAULT');
+  const [isQuestMenuOpen, setIsQuestMenuOpen] = useState(false);
+  const [isVocationMenuOpen, setIsVocationMenuOpen] = useState(false);
+  const [isPaymentMenuOpen, setIsPaymentMenuOpen] = useState(false);
+  const [isLocationMenuOpen, setIsLocationMenuOpen] = useState(false);
+  const [hoveredQuest, setHoveredQuest] = useState<string | null>(null);
+  
+  const questDropdownRef = useRef<HTMLDivElement>(null);
+  const vocationDropdownRef = useRef<HTMLDivElement>(null);
+  const paymentDropdownRef = useRef<HTMLDivElement>(null);
+  const locationDropdownRef = useRef<HTMLDivElement>(null);
+  
+  const [formData, setFormData] = useState<FormData>({
+    quest: '',
     charName: '',
+    charLevel: '',
+    vocation: '',
+    paymentMethod: '',
+    serviceLocation: '',
+    realLifeName: '',
     phone: ''
   });
 
+  const currentTheme = themes[activeThemeKey] || themes['DEFAULT'];
+
   useEffect(() => {
-    const loadStock = async () => {
-      setIsLoadingStock(true);
-      const stock = await fetchAvailability();
-      setAvailableItems(stock);
-      setIsLoadingStock(false);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (questDropdownRef.current && !questDropdownRef.current.contains(event.target as Node)) setIsQuestMenuOpen(false);
+      if (vocationDropdownRef.current && !vocationDropdownRef.current.contains(event.target as Node)) setIsVocationMenuOpen(false);
+      if (paymentDropdownRef.current && !paymentDropdownRef.current.contains(event.target as Node)) setIsPaymentMenuOpen(false);
+      if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target as Node)) setIsLocationMenuOpen(false);
     };
-    loadStock();
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,17 +148,14 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleBuyNow = (item: ShopItem) => {
-    setFormData(prev => ({ 
-      ...prev, 
-      itemName: item.name,
-    }));
-    setShowForm(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleQuestSelect = (q: string) => {
+    setFormData(prev => ({ ...prev, quest: q }));
+    setActiveThemeKey(q);
+    setIsQuestMenuOpen(false);
   };
 
   const isFormValid = () => {
-    return Object.values(formData).every(val => (val as string).trim() !== '');
+    return (Object.values(formData) as string[]).every(value => value.trim() !== '');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,299 +163,358 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
     if (!isFormValid()) return;
     
     setIsSubmitting(true);
-    const success = await submitOrderToGoogleSheets(formData);
+    const success = await submitToGoogleSheets(formData);
     setIsSubmitting(false);
-    if (success) {
-      setIsSuccess(true);
-    }
+    if (success) setIsSuccess(true);
   };
 
-  const isItemAvailable = (name: string) => {
-    const normalizedName = name.toUpperCase().trim();
-    return availableItems.some(available => 
-      normalizedName.includes(available) || available.includes(normalizedName)
-    );
+  const handleNewRequest = () => {
+    setFormData(prev => ({ ...prev, quest: '' }));
+    setActiveThemeKey('DEFAULT');
+    setIsSuccess(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const filteredItems = shopItems.filter(item => 
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const getItemTheme = (name: string) => {
-    const upperName = name.toUpperCase();
-    if (upperName.includes('SANGUINE')) return {
-      hoverBorder: 'hover:border-red-600/60',
-      hoverShadow: 'hover:shadow-[0_0_30px_rgba(255,0,0,0.3)]',
-      hoverText: 'group-hover:text-red-500'
-    };
-    
-    const yellowKeywords = ['PRIMAL', 'ARBOREAL', 'SPIRITTHORN', 'ETHEREAL', 'ARCANOMANCER', 'ALICORN'];
-    if (yellowKeywords.some(kw => upperName.includes(kw))) return {
-      hoverBorder: 'hover:border-yellow-400/60',
-      hoverShadow: 'hover:shadow-[0_0_30px_rgba(251,191,36,0.3)]',
-      hoverText: 'group-hover:text-yellow-400'
-    };
-
-    if (upperName.includes('SOUL')) return {
-      hoverBorder: 'hover:border-purple-500/60',
-      hoverShadow: 'hover:shadow-[0_0_30px_rgba(168,85,247,0.3)]',
-      hoverText: 'group-hover:text-purple-400'
-    };
-    
-    return {
-      hoverBorder: 'hover:border-blue-500/40',
-      hoverShadow: 'hover:shadow-[0_10px_40px_rgba(0,0,0,0.6)]',
-      hoverText: 'group-hover:text-blue-400'
-    };
-  };
+  const fieldColor = formData.quest ? currentTheme.color : undefined;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 animate-[fadeIn_0.5s_ease-out]">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-        <div className="flex items-center gap-4">
-          <button onClick={showForm ? () => setShowForm(false) : onBack} className="p-2.5 rounded-lg bg-black/40 border border-white/10 text-gray-400 hover:text-white transition-all backdrop-blur-md">
-            <ChevronLeft className="w-5 h-5" />
+    <div className="relative min-h-[90vh] overflow-hidden">
+      <div className="fixed inset-0 z-0 transition-all duration-1000 ease-in-out pointer-events-none">
+        <div 
+          className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] blur-[150px] opacity-40 transition-colors duration-1000"
+          style={{ background: `radial-gradient(circle, ${currentTheme.color} 0%, transparent 70%)` }}
+        ></div>
+        <div 
+          className="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] blur-[150px] opacity-40 transition-colors duration-1000"
+          style={{ background: `radial-gradient(circle, ${currentTheme.secondary} 0%, transparent 70%)` }}
+        ></div>
+        
+        <div 
+          className="absolute inset-0 opacity-10 transition-all duration-1000"
+          style={{ 
+            backgroundImage: `linear-gradient(${currentTheme.color} 1px, transparent 1px), linear-gradient(90deg, ${currentTheme.color} 1px, transparent 1px)`,
+            backgroundSize: '100px 100px',
+            maskImage: 'radial-gradient(ellipse at center, black, transparent 80%)'
+          }}
+        ></div>
+
+        <div className="absolute inset-0 z-10 overflow-hidden">
+          {[...Array(6)].map((_, i) => (
+            <div 
+              key={i}
+              className="absolute rounded-full blur-[2px] animate-pulse transition-all duration-1000"
+              style={{
+                width: `${Math.random() * 10 + 5}px`,
+                height: `${Math.random() * 10 + 5}px`,
+                backgroundColor: currentTheme.color,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                opacity: formData.quest ? 0.6 : 0,
+                boxShadow: `0 0 20px ${currentTheme.color}`,
+                animation: `float ${Math.random() * 5 + 5}s ease-in-out infinite`,
+                animationDelay: `${i * 0.5}s`
+              }}
+            ></div>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 py-6 relative z-10">
+        <div className="flex items-center gap-4 mb-10">
+          <button onClick={onBack} className="p-3 rounded-xl bg-black/40 border border-white/10 text-gray-400 hover:text-white transition-all backdrop-blur-md">
+            <ChevronLeft className="w-6 h-6" />
           </button>
-          <div>
-            <h2 className="text-2xl font-gamer font-black text-white uppercase tracking-tighter">
-              SISTEMA DE <span className="text-[#39ff14] neon-glow-green">ENCOMENDAS</span>
-            </h2>
-            <p className="text-[9px] font-gamer text-gray-500 uppercase tracking-widest mt-0.5 opacity-60">
-              {showForm ? 'Solicitação de Proposta' : 'Premium Gear Selection'}
-            </p>
+          <div className="animate-[fadeIn_0.5s_ease-out]">
+            <h2 className="text-3xl font-gamer font-black text-white uppercase tracking-tighter">Start <span className="transition-colors duration-1000" style={{ color: currentTheme.color }}>Service</span></h2>
+            <p className="text-[10px] font-gamer text-gray-500 uppercase tracking-widest mt-1 opacity-70">Status: {currentTheme.name}</p>
           </div>
         </div>
 
-        {!showForm && !isSuccess && (
-          <div className="flex items-center gap-4">
-            {isLoadingStock && (
-              <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl">
-                <Loader2 className="w-4 h-4 text-[#00f2ff] animate-spin" />
-                <span className="text-[10px] font-gamer text-gray-400 uppercase tracking-widest">Sincronizando Estoque...</span>
+        {isSuccess ? (
+          <div className="max-w-3xl mx-auto text-center py-16 animate-[fadeIn_0.5s_ease-out]">
+            <div className="relative inline-block mb-10">
+              <div className="absolute inset-0 rounded-full blur-[40px] opacity-40 animate-pulse" style={{ backgroundColor: currentTheme.color }}></div>
+              <div className="relative p-8 rounded-full border-2 shadow-2xl transition-all duration-700 bg-black/40 backdrop-blur-xl"
+                style={{ borderColor: `${currentTheme.color}88`, boxShadow: `0 0 40px ${currentTheme.color}33` }}>
+                <CheckCircle2 className="w-24 h-24" style={{ color: currentTheme.color }} />
               </div>
-            )}
+            </div>
+            
+            <h2 className="text-4xl md:text-6xl font-gamer font-black text-white mb-6 uppercase tracking-tighter leading-tight drop-shadow-2xl">
+              MISSÃO <span style={{ color: currentTheme.color }}>CONFIRMADA,</span>
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-300 font-gamer uppercase tracking-widest opacity-80 mb-12">
+              EM BREVE ENTRAREMOS EM CONTATO!
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <button 
+                onClick={handleNewRequest}
+                className="group relative px-10 py-5 bg-white text-black font-gamer font-bold rounded-2xl flex items-center justify-center gap-3 hover:scale-105 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)] uppercase tracking-widest text-sm w-full sm:w-auto overflow-hidden"
+                style={{ backgroundColor: currentTheme.color }}
+              >
+                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-700" />
+                Nova Solicitação
+              </button>
+              
+              <button 
+                onClick={onBack} 
+                className="px-10 py-5 bg-black/40 border border-gray-700 text-white font-gamer rounded-2xl flex items-center justify-center gap-2 hover:border-white transition-all backdrop-blur-sm uppercase tracking-widest text-sm w-full sm:w-auto"
+              >
+                <ChevronLeft className="w-5 h-5" /> Voltar ao Início
+              </button>
+            </div>
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6 animate-[fadeIn_0.7s_ease-out]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* DROPDOWN QUEST */}
+              <div className={`relative ${isQuestMenuOpen ? 'z-50' : 'z-20'}`} ref={questDropdownRef}>
+                <CompactCard icon={<Trophy />} label="QUAL QUEST GOSTARIA DE FAZER? *" color={currentTheme.color}>
+                  <div onClick={() => setIsQuestMenuOpen(!isQuestMenuOpen)} className="w-full flex items-center justify-between cursor-pointer py-1">
+                    <span className={`text-sm font-bold ${formData.quest ? 'text-white' : 'text-gray-500'}`}>
+                      {formData.quest ? <span className="flex items-center gap-2"><span>{questIcons[formData.quest]}</span> {formData.quest}</span> : 'Selecione a Quest'}
+                    </span>
+                    <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${isQuestMenuOpen ? 'rotate-180' : ''}`} />
+                  </div>
+                  {isQuestMenuOpen && (
+                    <div className="absolute left-0 right-0 top-[115%] z-[60] bg-[#0a0a0c]/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.9)] animate-[fadeIn_0.2s_ease-out] p-1">
+                      {Object.values(Quest).map(q => {
+                        const questTheme = themes[q];
+                        const isSelected = formData.quest === q;
+                        return (
+                          <div key={q} 
+                            onMouseEnter={() => setHoveredQuest(q)}
+                            onMouseLeave={() => setHoveredQuest(null)}
+                            onClick={() => handleQuestSelect(q)}
+                            className={`relative flex items-center gap-3 p-5 transition-all cursor-pointer border-b border-white/5 last:border-none rounded-xl ${isSelected ? 'bg-white/10' : 'hover:bg-white/5'}`}
+                            style={{ 
+                              borderColor: isSelected ? `${questTheme.color}88` : 'transparent',
+                              borderWidth: isSelected ? '1px' : '0px',
+                              borderStyle: 'solid',
+                              boxShadow: isSelected ? `0 0 20px ${questTheme.color}33` : 'none'
+                            }}
+                          >
+                             {isSelected ? <CheckSquare className="w-5 h-5" style={{ color: questTheme.color }} /> : <Square className="w-5 h-5 text-gray-700" />}
+                             <span className="text-xl">{questIcons[q]}</span>
+                             <span className={`text-sm font-bold ${isSelected ? 'text-white' : 'text-gray-400'}`}>{q}</span>
+
+                             {hoveredQuest === q && questInfo[q] && (
+                               <div className="absolute left-[102%] top-[-20px] w-[320px] bg-[#0d0d0f]/95 border rounded-2xl p-6 z-[100] animate-[slideInRight_0.3s_ease-out] hidden md:block backdrop-blur-2xl shadow-2xl"
+                                 style={{ borderColor: `${questTheme.color}44`, boxShadow: `0 0 50px ${questTheme.color}20` }}>
+                                 <div className="flex items-center gap-3 mb-5 border-b border-white/10 pb-3">
+                                   <span className="text-2xl">{questIcons[q]}</span>
+                                   <h4 className="font-gamer font-bold text-white text-xs uppercase tracking-wider">{q}</h4>
+                                 </div>
+                                 <div className="space-y-5">
+                                   <div>
+                                     <div className="flex items-center gap-2 text-[9px] font-gamer text-gray-500 uppercase mb-3">
+                                       <FileText className="w-3 h-3" /> Requerimentos:
+                                     </div>
+                                     <div className="space-y-2 pl-1">
+                                       {questInfo[q].requirements.map((req, i) => (
+                                         <div key={i} className="flex items-start gap-2 text-[11px] text-gray-300 font-medium">
+                                           <div className="w-1.5 h-1.5 rounded-full mt-1.5" style={{ backgroundColor: questTheme.color }}></div>
+                                           {req}
+                                         </div>
+                                       ))}
+                                     </div>
+                                   </div>
+                                   <div className="bg-white/5 p-3 rounded-xl border border-white/5 space-y-1">
+                                     {questInfo[q].vocations.map((voc, i) => (
+                                       <div key={i} className="text-[10px] text-gray-300 font-bold uppercase tracking-tighter">{voc}</div>
+                                     ))}
+                                   </div>
+                                   {questInfo[q].note && <div className="text-[10px] text-gray-400 italic border-l-2 pl-3" style={{ borderColor: questTheme.color }}>{questInfo[q].note}</div>}
+                                   <div className="pt-3 border-t border-white/10">
+                                      <div className="text-[9px] font-gamer uppercase mb-2" style={{ color: '#FFD700' }}>Recompensa Principal</div>
+                                      {questInfo[q].rewards.map((rew, i) => <div key={i} className="text-[11px] text-white font-bold">{rew}</div>)}
+                                   </div>
+                                 </div>
+                               </div>
+                             )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </CompactCard>
+              </div>
+
+              {/* LEVEL */}
+              <div className="z-10">
+                <CompactCard icon={<Zap />} label="LEVEL DO SEU CHAR *" color={fieldColor || "#39ff14"}>
+                  <input required type="text" name="charLevel" placeholder="Ex: 800" value={formData.charLevel} onChange={handleChange}
+                    className="w-full bg-transparent text-white focus:outline-none text-sm font-bold placeholder:text-gray-700" />
+                </CompactCard>
+              </div>
+
+              {/* VOCAÇÃO */}
+              <div className={`relative ${isVocationMenuOpen ? 'z-50' : 'z-20'}`} ref={vocationDropdownRef}>
+                <CompactCard icon={<Shield />} label="VOCAÇÃO DO SEU NOVO CHAR *" color={fieldColor || "#fbbf24"}>
+                  <div onClick={() => setIsVocationMenuOpen(!isVocationMenuOpen)} className="w-full flex items-center justify-between cursor-pointer py-1">
+                    <span className={`text-sm font-bold ${formData.vocation ? 'text-white' : 'text-gray-500'}`}>
+                      {formData.vocation ? <span className="flex items-center gap-2"><span>{vocationIcons[formData.vocation as Vocation]}</span> {formData.vocation}</span> : 'Selecione a Vocação'}
+                    </span>
+                    <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${isVocationMenuOpen ? 'rotate-180' : ''}`} />
+                  </div>
+                  {isVocationMenuOpen && (
+                    <div className="absolute left-0 right-0 top-[115%] z-[60] bg-[#0a0a0c]/95 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden shadow-2xl animate-[fadeIn_0.2s_ease-out]">
+                      {Object.values(Vocation).map(v => (
+                        <div key={v} onClick={() => { setFormData(p => ({ ...p, vocation: v })); setIsVocationMenuOpen(false); }}
+                          className="flex items-center gap-3 p-4 hover:bg-white/10 transition-all cursor-pointer border-b border-white/5 last:border-none">
+                           {formData.vocation === v ? <CheckSquare className="w-5 h-5" style={{ color: fieldColor || '#fbbf24' }} /> : <Square className="w-5 h-5 text-gray-700" />}
+                           <span className="text-xl">{vocationIcons[v]}</span>
+                           <span className="text-sm font-bold text-gray-300">{v}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CompactCard>
+              </div>
+
+              {/* PAGAMENTO */}
+              <div className={`relative ${isPaymentMenuOpen ? 'z-50' : 'z-20'}`} ref={paymentDropdownRef}>
+                <CompactCard icon={<Coins />} label="FORMA DE PAGAMENTO *" color={fieldColor || "#00f2ff"}>
+                  <div onClick={() => setIsPaymentMenuOpen(!isPaymentMenuOpen)} className="w-full flex items-center justify-between cursor-pointer py-1">
+                    <span className={`text-sm font-bold ${formData.paymentMethod ? 'text-white' : 'text-gray-500'}`}>
+                      {formData.paymentMethod ? <span className="flex items-center gap-2"><span>{paymentIcons[formData.paymentMethod as PaymentMethod]}</span> {formData.paymentMethod}</span> : 'Selecione o Pagamento'}
+                    </span>
+                    <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${isPaymentMenuOpen ? 'rotate-180' : ''}`} />
+                  </div>
+                  {isPaymentMenuOpen && (
+                    <div className="absolute left-0 right-0 top-[115%] z-[60] bg-[#0a0a0c]/95 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden shadow-2xl animate-[fadeIn_0.2s_ease-out]">
+                      {Object.values(PaymentMethod).map(p => (
+                        <div key={p} onClick={() => { setFormData(prev => ({ ...prev, paymentMethod: p })); setIsPaymentMenuOpen(false); }}
+                          className="flex items-center gap-3 p-4 hover:bg-white/10 transition-all cursor-pointer border-b border-white/5 last:border-none">
+                           {formData.paymentMethod === p ? <CheckSquare className="w-5 h-5" style={{ color: fieldColor || '#00f2ff' }} /> : <Square className="w-5 h-5 text-gray-700" />}
+                           <span className="text-xl">{paymentIcons[p as PaymentMethod]}</span>
+                           <span className="text-sm font-bold text-gray-300">{p}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CompactCard>
+              </div>
+
+              {/* LOCAL */}
+              <div className={`relative ${isLocationMenuOpen ? 'z-50' : 'z-20'}`} ref={locationDropdownRef}>
+                <CompactCard icon={<MapIcon />} label="LOCAL DO SERVICE *" color={fieldColor || "#bc13fe"}>
+                  <div onClick={() => setIsLocationMenuOpen(!isLocationMenuOpen)} className="w-full flex items-center justify-between cursor-pointer py-1">
+                    <span className={`text-sm font-bold ${formData.serviceLocation ? 'text-white' : 'text-gray-500'}`}>
+                      {formData.serviceLocation ? <span className="flex items-center gap-2"><span>{locationIcons[formData.serviceLocation as ServiceLocation]}</span> {formData.serviceLocation}</span> : 'Selecione o Local'}
+                    </span>
+                    <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${isLocationMenuOpen ? 'rotate-180' : ''}`} />
+                  </div>
+                  {isLocationMenuOpen && (
+                    <div className="absolute left-0 right-0 top-[115%] z-[60] bg-[#0a0a0c]/95 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden shadow-2xl animate-[fadeIn_0.2s_ease-out]">
+                      {Object.values(ServiceLocation).map(l => (
+                        <div key={l} onClick={() => { setFormData(prev => ({ ...prev, serviceLocation: l })); setIsLocationMenuOpen(false); }}
+                          className="flex items-center gap-3 p-4 hover:bg-white/10 transition-all cursor-pointer border-b border-white/5 last:border-none">
+                           {formData.serviceLocation === l ? (
+                             <CheckSquare className="w-5 h-5" style={{ color: fieldColor || '#bc13fe' }} />
+                           ) : (
+                             <Square className="w-5 h-5 text-gray-700" />
+                           )}
+                           <span className="text-xl">{locationIcons[l as ServiceLocation]}</span>
+                           <span className="text-sm font-bold text-gray-300">{l}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CompactCard>
+              </div>
+
+              {/* NOME RL */}
+              <div className="z-10">
+                <CompactCard icon={<Sparkles />} label="QUAL É O SEU NOME RL? *" color={fieldColor || "#39ff14"}>
+                  <input required type="text" name="realLifeName" placeholder="Seu nome real" value={formData.realLifeName} onChange={handleChange}
+                    className="w-full bg-transparent text-white focus:outline-none text-sm font-bold placeholder:text-gray-700" />
+                </CompactCard>
+              </div>
+
+              {/* TELEFONE */}
+              <div className="z-10">
+                <CompactCard icon={<Phone />} label="TELEFONE DE CONTATO? *" color={fieldColor || "#ffffff"}>
+                  <input required type="tel" name="phone" placeholder="Ex: 551199999-9999" value={formData.phone} onChange={handleChange}
+                    className="w-full bg-transparent text-white focus:outline-none text-sm font-bold placeholder:text-gray-700" />
+                </CompactCard>
+              </div>
+
+              {/* NOME CHAR */}
+              <div className="z-10">
+                <CompactCard icon={<User />} label="NOME DO SEU CHAR *" color={fieldColor || "#bc13fe"}>
+                  <input required type="text" name="charName" placeholder="Ex: Ragha Wizard" value={formData.charName} onChange={handleChange}
+                    className="w-full bg-transparent text-white focus:outline-none text-sm font-bold placeholder:text-gray-700" />
+                </CompactCard>
+              </div>
+
+            </div>
+
+            <div className="mt-6 flex flex-col items-center gap-4">
+              {!isFormValid() && formData.quest && (
+                <div className="flex items-center gap-2 text-amber-500 font-gamer text-[10px] uppercase tracking-widest animate-pulse">
+                  <AlertCircle className="w-3 h-3" /> Preencha todos os campos obrigatórios (*) para enviar
+                </div>
+              )}
+              
+              <button type="submit" disabled={isSubmitting || !isFormValid()}
+                className="w-full py-6 rounded-[2rem] transition-all duration-700 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed shadow-2xl font-gamer text-black font-black tracking-[0.4em] uppercase text-xl relative overflow-hidden group"
+                style={{ backgroundColor: currentTheme.color, boxShadow: isFormValid() ? `0 0 40px ${currentTheme.color}44` : 'none' }}>
+                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                {isSubmitting ? 'PROCESSANDO...' : 'ENVIAR SOLICITAÇÃO'}
+              </button>
+            </div>
+          </form>
         )}
       </div>
 
-      {isSuccess ? (
-        <div className="max-w-xl mx-auto text-center py-16 animate-[fadeIn_0.5s_ease-out]">
-          <div className="mb-6 inline-flex items-center justify-center p-6 rounded-full bg-[#39ff14]/5 border border-[#39ff14]/20 shadow-[0_0_40px_rgba(57,255,20,0.1)]">
-            <CheckCircle2 className="w-16 h-16 text-[#39ff14]" />
-          </div>
-          <h3 className="text-3xl font-gamer font-bold text-white mb-3 uppercase tracking-tighter">SUCESSO!</h3>
-          <p className="text-gray-400 mb-10 text-base font-medium">Sua encomenda foi registrada com prioridade máxima.</p>
-          <button 
-            onClick={() => { setIsSuccess(false); setShowForm(false); }}
-            className="px-8 py-4 bg-[#39ff14] text-black font-gamer font-bold rounded-xl flex items-center justify-center gap-2 mx-auto hover:scale-105 transition-all shadow-[0_0_20px_rgba(57,255,20,0.2)] text-xs uppercase tracking-widest"
-          >
-            <RefreshCw className="w-4 h-4" /> Voltar à Vitrine
-          </button>
-        </div>
-      ) : showForm ? (
-        <div className="max-w-2xl mx-auto animate-[slideInUp_0.4s_ease-out]">
-           <div className="bg-[#0a0a0c]/80 backdrop-blur-2xl border border-white/5 rounded-[2rem] p-6 md:p-10 mb-10 shadow-2xl">
-              <h3 className="text-lg font-gamer font-bold text-white mb-8 uppercase tracking-widest flex items-center gap-2.5 border-b border-white/5 pb-4">
-                <Package className="text-[#39ff14] w-5 h-5" /> Registro de Interesse
-              </h3>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <OrderField icon={<Package />} label="ITEM DESEJADO *" color="#39ff14">
-                  <input 
-                    required 
-                    readOnly
-                    name="itemName" 
-                    placeholder="Ex: Sanguine Blade" 
-                    value={formData.itemName} 
-                    className="w-full bg-transparent text-white/70 font-bold placeholder:text-gray-700 focus:outline-none text-sm cursor-not-allowed" 
-                  />
-                </OrderField>
-
-                <OrderField icon={<User />} label="NOME DO SEU CHAR *" color="#bc13fe">
-                  <input required name="charName" placeholder="Ex: Ragha Knight" value={formData.charName} onChange={handleChange}
-                    className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
-                </OrderField>
-
-                <OrderField icon={<Phone />} label="WHATSAPP PARA CONTATO *" color="#25D366">
-                  <input required name="phone" placeholder="Ex: 553592451052" value={formData.phone} onChange={handleChange}
-                    className="w-full bg-transparent text-white font-bold placeholder:text-gray-700 focus:outline-none text-sm" />
-                </OrderField>
-
-                <div className="flex flex-col items-center gap-5 mt-8">
-                  {!isFormValid() && (
-                    <div className="flex items-center gap-2 text-amber-500 font-gamer text-[8px] uppercase tracking-[0.2em] animate-pulse">
-                      <AlertCircle className="w-2.5 h-2.5" /> Preencha todos os campos obrigatórios
-                    </div>
-                  )}
-                  <button 
-                    type="submit"
-                    disabled={isSubmitting || !isFormValid()}
-                    className="w-full py-6 bg-[#39ff14] text-black font-gamer font-black text-xl tracking-[0.3em] uppercase rounded-2xl hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-20 disabled:grayscale shadow-[0_0_40px_rgba(57,255,20,0.2)] relative overflow-hidden group/btn"
-                  >
-                    <div className="absolute inset-0 bg-white opacity-0 group-hover/btn:opacity-10 transition-opacity"></div>
-                    {isSubmitting ? 'ENVIANDO...' : 'CONFIRMAR ENCOMENDA'}
-                  </button>
-                  <button type="button" onClick={() => setShowForm(false)} className="text-gray-600 font-gamer text-[9px] uppercase tracking-[0.2em] hover:text-white transition-colors py-2">
-                    Voltar para a vitrine
-                  </button>
-                </div>
-              </form>
-           </div>
-        </div>
-      ) : (
-        <div className="space-y-8">
-          {/* Main Info Banner */}
-          <div className="bg-[#0a0a0c]/80 backdrop-blur-xl border border-[#39ff14]/20 rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden group max-w-5xl mx-auto">
-            <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
-              <div className="w-14 h-14 rounded-xl bg-[#39ff14]/10 border border-[#39ff14]/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(57,255,20,0.1)]">
-                <Sparkles className="w-6 h-6 text-[#39ff14] animate-pulse" />
-              </div>
-              <div>
-                <p className="text-xs md:text-sm text-gray-300 font-gamer tracking-wider leading-relaxed opacity-90">
-                  "O botão Encomendas <span className="text-[#39ff14] font-bold">garante a você acesso prioritário aos itens desejados</span>. Registre seu interesse antecipadamente e, assim que o produto estiver disponível em nosso estoque, <span className="text-[#39ff14] font-bold">você terá preferência na compra</span>. Nossa equipe entrará em contato para negociar condições exclusivas e apresentar uma <span className="text-[#39ff14] font-bold">oferta personalizada.</span>"
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Destaque de Segurança de Encomenda */}
-          <div className="max-w-5xl mx-auto animate-[fadeIn_0.8s_ease-out]">
-            <div className="bg-gradient-to-r from-[#39ff14]/10 via-[#39ff14]/5 to-transparent border-l-4 border-[#39ff14] p-5 rounded-r-2xl flex items-start gap-4 shadow-lg group">
-              <div className="p-2.5 rounded-lg bg-[#39ff14]/10 text-[#39ff14] flex-shrink-0 group-hover:scale-110 transition-transform">
-                <Info className="w-5 h-5" />
-              </div>
-              <p className="text-sm md:text-base text-gray-100 font-medium leading-relaxed">
-                <span className="text-[#39ff14] font-gamer font-bold tracking-widest uppercase text-xs block mb-1">Fique tranquilo!</span>
-                Ao encomendar um item você <span className="text-[#39ff14] font-bold">não gera obrigação de compra</span>, apenas queremos saber o que os nossos clientes precisam para oferecer as melhores oportunidades!
-              </p>
-            </div>
-          </div>
-
-          {/* Filtro de Pesquisa - Alinhado à DIREITA acima dos cards */}
-          <div className="flex justify-end pt-4 animate-[fadeIn_0.6s_ease-out]">
-            <div className="max-w-md w-full relative group">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-[#00f2ff] transition-colors">
-                <Search className="w-4 h-4" />
-              </div>
-              <input 
-                type="text" 
-                placeholder="BUSCAR ITEM NA VITRINE..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-[#0a0a0c]/80 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-xs font-gamer text-white focus:outline-none focus:border-[#00f2ff]/50 focus:ring-2 focus:ring-[#00f2ff]/10 transition-all w-full tracking-widest placeholder:text-gray-700"
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <div className="px-2 py-1 rounded bg-white/5 border border-white/10 text-[8px] font-gamer text-gray-600 uppercase">
-                  {filteredItems.length} Result.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Items Grid */}
-          {filteredItems.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-4">
-              {filteredItems.map((item) => {
-                const available = isItemAvailable(item.name);
-                const theme = getItemTheme(item.name);
-                return (
-                  <div 
-                    key={item.id} 
-                    className={`bg-[#0b0e14] border border-white/5 rounded-2xl overflow-hidden group flex flex-col h-full transition-all duration-300 relative ${theme.hoverBorder} ${theme.hoverShadow}`}
-                  >
-                    
-                    {/* Stock Badge */}
-                    {available && (
-                      <div className="absolute top-4 right-4 z-20 px-3 py-1 bg-[#39ff14]/10 border border-[#39ff14]/40 rounded-full flex items-center gap-1.5 shadow-[0_0_15px_rgba(57,255,20,0.2)] animate-pulse">
-                        <div className="w-2 h-2 rounded-full bg-[#39ff14] shadow-[0_0_8px_#39ff14]"></div>
-                        <span className="text-[7px] font-gamer font-bold text-[#39ff14] uppercase tracking-widest">PRONTA ENTREGA</span>
-                      </div>
-                    )}
-
-                    {/* Header Card */}
-                    <div className="p-5 pb-0">
-                      <div className={`text-[8px] font-gamer font-bold px-2.5 py-1 rounded tracking-widest inline-block mb-8 ${item.tag === 'MYTHIC' ? 'bg-amber-500/10 border border-amber-500/30 text-amber-500' : 'bg-[#ff4d00]/10 border border-[#ff4d00]/30 text-[#ff4d00]'}`}>
-                        {item.tag}
-                      </div>
-                      
-                      {/* Moldura de Item */}
-                      <div className="relative h-40 w-40 mx-auto flex items-center justify-center">
-                        <div className="absolute inset-0 border border-white/10 rounded-xl flex items-center justify-center overflow-hidden bg-black/20 group-hover:bg-black/40 transition-colors">
-                           <div className={`absolute inset-2 ${available ? 'bg-[#39ff14]/5' : 'bg-blue-500/5'} rounded-full blur-[30px] group-hover:opacity-100 transition-opacity`}></div>
-                           <img 
-                              src={item.image} 
-                              alt={item.name} 
-                              className="w-20 h-20 object-contain relative z-10 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_15px_rgba(0,242,255,0.2)]" 
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'https://www.tibiawiki.com.br/images/a/af/Tibia_Icon.gif';
-                              }}
-                           />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="px-5 mt-6 flex-grow flex flex-col items-center text-center">
-                      <h4 className={`font-gamer font-bold text-white text-base tracking-tighter mb-2 transition-colors duration-300 uppercase ${theme.hoverText}`}>
-                        {item.name}
-                      </h4>
-                      <p className="text-[10px] text-gray-500 leading-relaxed font-medium mb-6 line-clamp-2">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    {/* Footer Card */}
-                    <div className="p-5 pt-4 border-t border-white/5 mt-auto bg-black/10 flex justify-center">
-                      <button 
-                        onClick={() => handleBuyNow(item)}
-                        className={`w-full max-w-[160px] py-2.5 ${available ? 'bg-gradient-to-br from-[#39ff14] to-green-600 text-black shadow-[0_0_15px_rgba(57,255,20,0.3)]' : 'bg-gradient-to-br from-blue-600 to-blue-500 text-white'} font-gamer font-bold text-[8px] tracking-widest rounded-lg hover:scale-105 active:scale-95 transition-all uppercase`}
-                      >
-                        {available ? 'COMPRAR JÁ' : 'ENCOMENDAR'}
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="py-20 text-center animate-[fadeIn_0.5s_ease-out]">
-              <div className="p-6 rounded-full bg-white/5 border border-white/10 inline-flex mb-6">
-                <Search className="w-10 h-10 text-gray-600" />
-              </div>
-              <h4 className="font-gamer font-bold text-white text-xl uppercase tracking-widest mb-2">Nenhum item encontrado</h4>
-              <p className="text-gray-500 text-sm">Tente buscar por um termo diferente ou limpe o filtro.</p>
-              <button 
-                onClick={() => setSearchTerm('')}
-                className="mt-6 text-[#00f2ff] font-gamer text-[10px] uppercase tracking-widest hover:underline"
-              >
-                Limpar Filtro
-              </button>
-            </div>
-          )}
-        </div>
-      )}
       <style>{`
-        @keyframes slideInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+        @keyframes float {
+          0%, 100% { transform: translateY(0) translateX(0); }
+          50% { transform: translateY(-30px) translateX(20px); }
+        }
+        @keyframes slideInRight {
+          from { opacity: 0; transform: translateX(20px); }
+          to { opacity: 1; transform: translateX(0); }
         }
       `}</style>
     </div>
   );
 };
 
-const OrderField: React.FC<{ icon: React.ReactNode, label: string, color: string, children: React.ReactNode }> = ({ icon, label, color, children }) => (
-  <div className="bg-[#0a0a0c]/40 border border-white/5 p-5 rounded-xl flex flex-col gap-2.5 group transition-all focus-within:bg-[#0a0a0c]/60"
-    style={{ borderColor: `${color}11` }}>
-    <div className="flex items-center gap-2.5">
-      <div className="p-2 rounded-lg bg-black/40 border border-current flex items-center justify-center opacity-70" style={{ color: color }}>
-        {React.cloneElement(icon as React.ReactElement, { size: 14 })}
-      </div>
-      <label className="text-[8px] font-gamer font-bold tracking-widest text-gray-500 uppercase leading-tight">{label}</label>
-    </div>
-    <div className="bg-black/30 border border-white/5 rounded-lg p-3.5 min-h-[44px] flex items-center focus-within:border-white/20 transition-all">
-      {children}
-    </div>
-  </div>
-);
+interface CompactCardProps {
+  icon: React.ReactNode;
+  label: string;
+  children: React.ReactNode;
+  color: string;
+}
 
-export default OrdersView;
+const CompactCard: React.FC<CompactCardProps> = ({ icon, label, children, color }) => {
+  return (
+    <div 
+      className="bg-[#0a0a0c]/60 backdrop-blur-md border p-6 rounded-[2rem] flex flex-col gap-4 group transition-all shadow-xl h-full"
+      style={{ 
+        borderColor: color !== '#ffffff' ? `${color}44` : 'rgba(255, 255, 255, 0.05)',
+        boxShadow: color !== '#ffffff' ? `0 0 25px ${color}11` : 'none'
+      }}
+    >
+      <div className="flex items-center gap-4">
+        <div className="p-3 rounded-2xl bg-black/40 border-2 transition-all duration-700 flex items-center justify-center flex-shrink-0"
+          style={{ borderColor: `${color}44`, color: color, boxShadow: `0 0 15px ${color}22` }}>
+          {React.cloneElement(icon as React.ReactElement, { className: "w-6 h-6" })}
+        </div>
+        <label className="text-xs font-gamer font-bold tracking-widest text-gray-400 uppercase leading-tight select-none opacity-80">
+          {label}
+        </label>
+      </div>
+      <div className="relative bg-black/40 border border-white/5 rounded-2xl p-4 focus-within:border-white/20 transition-all flex items-center min-h-[60px] backdrop-blur-sm">
+        <div className="w-full">{children}</div>
+      </div>
+    </div>
+  );
+};
+
+export default RegistrationForm;

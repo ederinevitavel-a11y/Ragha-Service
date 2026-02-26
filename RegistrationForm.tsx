@@ -29,13 +29,7 @@ const PartnersView: React.FC<PartnersViewProps> = ({ onBack }) => {
     {
       name: 'Anuncie Aqui!!!',
       description: 'Quer anunciar conosco ? Procure o nosso time!',
-      icon: (
-        <div className="w-16 h-16 bg-gradient-to-br from-[#00f2ff] to-[#bc13fe] rounded-2xl flex items-center justify-center p-0.5 shadow-lg mb-6">
-          <div className="w-full h-full bg-[#0a0a0c] rounded-[14px] flex items-center justify-center">
-            <Zap className="w-8 h-8 text-[#00f2ff]" />
-          </div>
-        </div>
-      ),
+      icon: <img src="https://i.imgur.com/GRTjCVW.png" alt="Anuncie Aqui Logo" className="w-full h-48 object-contain rounded-2xl mb-6" referrerPolicy="no-referrer" />,
       link: '#',
       tag: '',
       color: '#00f2ff',

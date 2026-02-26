@@ -1,45 +1,20 @@
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-export enum Vocation {
-  EK = 'ELITE KNIGHT',
-  ED = 'ELDER DRUID',
-  MS = 'MASTER SORCERER',
-  EX_MONK = 'EXALTED MONK',
-  RP = 'ROYAL PALADIN'
-}
+# Run and deploy your AI Studio app
 
-export enum PaymentMethod {
-  COINS = 'Pagamento em coins',
-  PERCENTAGE = '50% (% do Item)',
-  CLOSED_PT = 'PT Fechada (5 chars para fazer a quest)'
-}
+This contains everything you need to run your app locally.
 
-export enum ServiceLocation {
-  KALIBRA = 'Kalibra',
-  OTHER = 'Outro Servidor'
-}
+View your app in AI Studio: https://ai.studio/apps/8fd275d0-bf37-438d-be1c-b6c72f6084c7
 
-export enum Quest {
-  ROTTEN_BLOOD = 'Rotten Blood Quest',
-  PRIMAL_ORDEAL = 'Primal Ordeal Quest',
-  SOUL_WAR = 'Soul War Quest',
-  GRAVEBORN = 'The Roost of the Graveborn Quest'
-}
+## Run Locally
 
-export interface FormData {
-  quest: string;
-  charName: string;
-  charLevel: string;
-  vocation: string;
-  paymentMethod: string;
-  serviceLocation: string;
-  realLifeName: string;
-  phone: string;
-}
+**Prerequisites:**  Node.js
 
-export interface OrderData {
-  itemName: string;
-  charName: string;
-  phone: string;
-}
 
-export type AppTab = 'HOME' | 'FORM' | 'ABOUT' | 'TEAM' | 'ORDERS' | 'PARTNERS';
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
