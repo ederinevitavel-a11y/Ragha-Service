@@ -1,6 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
-import { ArrowRight, Sparkles, ShieldCheck, Zap, Cpu, Wand2, Shield, Snowflake, ShoppingBag } from 'lucide-react';
+import { ArrowRight, Sparkles, ShieldCheck, Cpu, Wand2, Shield, Snowflake, ShoppingBag } from 'lucide-react';
+import Logo from './Logo';
 
 interface HomeViewProps {
   onStart: () => void;
@@ -171,7 +172,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout, onOrders, onPartn
 
           <div className="bg-[#0a0a0c] border-l-4 border-[#00f2ff] p-6 rounded-r-xl shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Zap className="w-16 h-16 text-[#00f2ff]" />
+              <Logo className="w-16 h-16" />
             </div>
             <p className="text-xl md:text-2xl text-gray-300 leading-relaxed font-light">
               Realizamos as quests <span className="text-white font-bold">Soul War</span>, 
@@ -326,7 +327,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout, onOrders, onPartn
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-16">
         {[
           { label: 'Quests Concluídas', value: '1.2k+', color: 'text-white', icon: <Sparkles className="w-3 h-3 mb-2 opacity-40" /> },
-          { label: 'Satisfação', value: '100%', color: 'text-[#00f2ff]', icon: <Zap className="w-3 h-3 mb-2 opacity-40" /> },
+          { label: 'Satisfação', value: '100%', color: 'text-[#00f2ff]', icon: <Logo className="w-3 h-3 mb-2 opacity-40" /> },
           { label: 'Time de Service', value: '07+', color: 'text-[#39ff14]', icon: <Shield className="w-3 h-3 mb-2 opacity-40" /> },
           { label: 'Anos de Experiência', value: '06+', color: 'text-[#a5f3fc]', icon: <Wand2 className="w-3 h-3 mb-2 opacity-40" /> }
         ].map((stat, idx) => (
