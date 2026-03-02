@@ -144,7 +144,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout, onOrders, onPartn
       <button 
         onClick={onOrders}
         className="fixed bottom-6 right-10 md:hidden z-[100] group"
-        aria-label="Ir para Encomendas"
+        aria-label="Ir para Área de Itens"
       >
         <div className="absolute inset-[-10px] bg-[#39ff14]/20 rounded-full animate-ping pointer-events-none"></div>
         <div className="absolute inset-[-4px] bg-[#39ff14]/30 rounded-full animate-pulse pointer-events-none"></div>
@@ -196,7 +196,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout, onOrders, onPartn
             >
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
               <span className="relative z-10 flex items-center gap-2">
-                START SERVICE <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                SOLICITAR SERVICE <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </span>
             </button>
 
@@ -206,7 +206,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout, onOrders, onPartn
               className="group relative px-8 py-4 bg-transparent border-2 border-[#39ff14] text-[#39ff14] font-gamer font-bold tracking-widest uppercase rounded-lg overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(57,255,20,0.2)] hover:bg-[#39ff14] hover:text-black"
             >
               <span className="relative z-10 flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5" /> ENCOMENDAS
+                <ShoppingBag className="w-5 h-5" /> ÁREA DE ITENS
               </span>
             </button>
 
@@ -269,10 +269,11 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout, onOrders, onPartn
               
               {/* Background Integrated Visuals */}
               <div className="absolute inset-0 z-0">
-                <img 
-                  src="https://images.unsplash.com/photo-1516900448138-898700243b4d?q=80&w=1200&auto=format&fit=crop" 
-                  alt="" 
-                  className="w-full h-full object-cover opacity-30 brightness-50 grayscale transition-transform duration-[20s] group-hover:scale-110"
+                <div 
+                  className="w-full h-full bg-cover bg-center opacity-30 brightness-50 grayscale transition-transform duration-[20s] group-hover:scale-110"
+                  style={{ 
+                    backgroundImage: 'url("https://images.unsplash.com/photo-1516900448138-898700243b4d?q=80&w=1200&auto=format&fit=crop")',
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/40 via-[#0a0a0c]/80 to-[#050505]"></div>
               </div>

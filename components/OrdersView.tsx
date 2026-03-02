@@ -134,9 +134,15 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
     );
   };
 
-  const filteredItems = shopItems.filter(item => 
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems = shopItems
+    .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    .sort((a, b) => {
+      const aAvailable = isItemAvailable(a.name);
+      const bAvailable = isItemAvailable(b.name);
+      if (aAvailable && !bAvailable) return -1;
+      if (!aAvailable && bAvailable) return 1;
+      return 0;
+    });
 
   const getItemTheme = (name: string) => {
     const upperName = name.toUpperCase();
@@ -175,7 +181,7 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
           </button>
           <div>
             <h2 className="text-2xl font-gamer font-black text-white uppercase tracking-tighter">
-              SISTEMA DE <span className="text-[#39ff14] neon-glow-green">ENCOMENDAS</span>
+              ÁREA DE <span className="text-[#39ff14] neon-glow-green">ITENS</span>
             </h2>
             <p className="text-[9px] font-gamer text-gray-500 uppercase tracking-widest mt-0.5 opacity-60">
               {showForm ? 'Solicitação de Proposta' : 'Premium Gear Selection'}
@@ -268,7 +274,7 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
               </div>
               <div>
                 <p className="text-xs md:text-sm text-gray-300 font-gamer tracking-wider leading-relaxed opacity-90">
-                  "O botão Encomendas <span className="text-[#39ff14] font-bold">garante a você acesso prioritário aos itens desejados</span>. Registre seu interesse antecipadamente e, assim que o produto estiver disponível em nosso estoque, <span className="text-[#39ff14] font-bold">você terá preferência na compra</span>. Nossa equipe entrará em contato para negociar condições exclusivas e apresentar uma <span className="text-[#39ff14] font-bold">oferta personalizada.</span>"
+                  "O botão Área de Itens <span className="text-[#39ff14] font-bold">garante a você acesso prioritário aos itens desejados</span>. Registre seu interesse antecipadamente e, assim que o produto estiver disponível em nosso estoque, <span className="text-[#39ff14] font-bold">você terá preferência na compra</span>. Nossa equipe entrará em contato para negociar condições exclusivas e apresentar uma <span className="text-[#39ff14] font-bold">oferta personalizada.</span>"
                 </p>
               </div>
             </div>
@@ -282,7 +288,7 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
               </div>
               <p className="text-sm md:text-base text-gray-100 font-medium leading-relaxed">
                 <span className="text-[#39ff14] font-gamer font-bold tracking-widest uppercase text-xs block mb-1">Fique tranquilo!</span>
-                Ao encomendar um item você <span className="text-[#39ff14] font-bold">não gera obrigação de compra</span>, apenas queremos saber o que os nossos clientes precisam para oferecer as melhores oportunidades!
+                Ao solicitar um item você <span className="text-[#39ff14] font-bold">não gera obrigação de compra</span>, apenas queremos saber o que os nossos clientes precisam para oferecer as melhores oportunidades!
               </p>
             </div>
           </div>
@@ -341,6 +347,7 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
                            <img 
                               src={item.image} 
                               alt={item.name} 
+                              referrerPolicy="no-referrer"
                               className="w-20 h-20 object-contain relative z-10 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_15px_rgba(0,242,255,0.2)]" 
                               onError={(e) => {
                                 (e.target as HTMLImageElement).src = 'https://www.tibiawiki.com.br/images/a/af/Tibia_Icon.gif';
@@ -366,7 +373,7 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
                         onClick={() => handleBuyNow(item)}
                         className={`w-full max-w-[160px] py-2.5 ${available ? 'bg-gradient-to-br from-[#39ff14] to-green-600 text-black shadow-[0_0_15px_rgba(57,255,20,0.3)]' : 'bg-gradient-to-br from-blue-600 to-blue-500 text-white'} font-gamer font-bold text-[8px] tracking-widest rounded-lg hover:scale-105 active:scale-95 transition-all uppercase`}
                       >
-                        {available ? 'COMPRAR JÁ' : 'ENCOMENDAR'}
+                        {available ? 'COMPRAR JÁ' : 'SOLICITAR'}
                       </button>
                     </div>
                   </div>
