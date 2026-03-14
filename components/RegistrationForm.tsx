@@ -202,7 +202,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
           {[...Array(6)].map((_, i) => (
             <div 
               key={i}
-              className="absolute rounded-full blur-[2px] animate-pulse transition-all duration-1000"
+              className="absolute rounded-full blur-[2px] transition-all duration-1000"
               style={{
                 width: `${Math.random() * 10 + 5}px`,
                 height: `${Math.random() * 10 + 5}px`,
@@ -211,8 +211,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
                 top: `${Math.random() * 100}%`,
                 opacity: formData.quest ? 0.6 : 0,
                 boxShadow: `0 0 20px ${currentTheme.color}`,
-                animation: `float ${Math.random() * 5 + 5}s ease-in-out infinite`,
-                animationDelay: `${i * 0.5}s`
+                animation: `float ${Math.random() * 5 + 5}s ease-in-out infinite ${i * 0.5}s`
               }}
             ></div>
           ))}
@@ -271,7 +270,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
               {/* DROPDOWN QUEST */}
-              <div className={`relative ${isQuestMenuOpen ? 'z-50' : 'z-20'}`} ref={questDropdownRef}>
+              <div className={`relative flex flex-col gap-2 ${isQuestMenuOpen ? 'z-50' : 'z-20'}`} ref={questDropdownRef}>
                 <CompactCard icon={<Trophy />} label="QUAL QUEST GOSTARIA DE FAZER? *" color={currentTheme.color}>
                   <div onClick={() => setIsQuestMenuOpen(!isQuestMenuOpen)} className="w-full flex items-center justify-between cursor-pointer py-1">
                     <span className={`text-sm font-bold ${formData.quest ? 'text-white' : 'text-gray-500'}`}>
@@ -281,6 +280,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
                   </div>
                   {isQuestMenuOpen && (
                     <div className="absolute left-0 right-0 top-[115%] z-[60] bg-[#0a0a0c]/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.9)] animate-[fadeIn_0.2s_ease-out] p-1">
+                      <div className="px-4 py-3 bg-[#00f2ff]/5 border-b border-white/10 rounded-t-xl mb-1 flex items-center gap-2">
+                        <Info className="w-4 h-4 text-[#00f2ff]" />
+                        <span className="text-[10px] font-gamer tracking-widest uppercase text-[#00f2ff]">
+                          Posicione o mouse sobre a quest para ver os requerimentos
+                        </span>
+                      </div>
                       {Object.values(Quest).map(q => {
                         const questTheme = themes[q];
                         const isSelected = formData.quest === q;
@@ -341,6 +346,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
                     </div>
                   )}
                 </CompactCard>
+                <div className="flex items-center gap-2 px-2 text-[10px] font-gamer tracking-widest uppercase text-gray-500">
+                  <Info className="w-3 h-3" />
+                  <span>Dica: Posicione o mouse sobre a quest para ver os requerimentos</span>
+                </div>
               </div>
 
               {/* LEVEL */}

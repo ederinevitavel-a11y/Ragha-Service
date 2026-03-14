@@ -135,7 +135,7 @@ const TeamView: React.FC<TeamViewProps> = ({ onBack }) => {
           {member.dynamicShape === 'particles' && (
             <div className="relative w-48 h-48 grid grid-cols-4 gap-4 rotate-12 opacity-30">
               {[...Array(16)].map((_, i) => (
-                <div key={i} className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: member.color, animationDelay: `${i * 0.1}s` }}></div>
+                <div key={i} className="w-2 h-2 rounded-full" style={{ backgroundColor: member.color, animation: `pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite ${i * 0.1}s` }}></div>
               ))}
               <div className="absolute inset-0 bg-radial-gradient from-current to-transparent" style={{ color: member.color, opacity: 0.2 }}></div>
             </div>

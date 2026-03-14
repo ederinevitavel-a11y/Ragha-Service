@@ -214,7 +214,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout, onOrders, onPartn
               onClick={onAbout}
               className="px-8 py-4 border border-gray-700 text-white font-gamer tracking-widest uppercase rounded-lg hover:border-[#00f2ff] hover:text-[#00f2ff] transition-all"
             >
-              SAIBA MAIS
+              REQUERIMENTOS
             </button>
 
             <button 
@@ -241,25 +241,25 @@ const HomeView: React.FC<HomeViewProps> = ({ onStart, onAbout, onOrders, onPartn
               {/* Top Pins */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 flex gap-4 -translate-y-full">
                 {[...Array(6)].map((_, i) => (
-                  <div key={`tp-${i}`} className="w-2.5 h-6 bg-gradient-to-t from-[#00f2ff]/60 to-transparent border-t border-[#00f2ff] rounded-t-sm shadow-[0_0_10px_rgba(0,242,255,0.4)] animate-pulse" style={{ animationDelay: `${i * 0.15}s` }}></div>
+                  <div key={`tp-${i}`} className="w-2.5 h-6 bg-gradient-to-t from-[#00f2ff]/60 to-transparent border-t border-[#00f2ff] rounded-t-sm shadow-[0_0_10px_rgba(0,242,255,0.4)]" style={{ animation: `pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite ${i * 0.15}s` }}></div>
                 ))}
               </div>
               {/* Bottom Pins */}
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-4 translate-y-full">
                 {[...Array(6)].map((_, i) => (
-                  <div key={`bp-${i}`} className="w-2.5 h-6 bg-gradient-to-b from-[#00f2ff]/60 to-transparent border-b border-[#00f2ff] rounded-b-sm shadow-[0_0_10px_rgba(0,242,255,0.4)] animate-pulse" style={{ animationDelay: `${i * 0.15}s` }}></div>
+                  <div key={`bp-${i}`} className="w-2.5 h-6 bg-gradient-to-b from-[#00f2ff]/60 to-transparent border-b border-[#00f2ff] rounded-b-sm shadow-[0_0_10px_rgba(0,242,255,0.4)]" style={{ animation: `pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite ${i * 0.15}s` }}></div>
                 ))}
               </div>
               {/* Left Pins */}
               <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col gap-4 -translate-x-full">
                 {[...Array(6)].map((_, i) => (
-                  <div key={`lp-${i}`} className="h-2.5 w-6 bg-gradient-to-l from-[#00f2ff]/60 to-transparent border-l border-[#00f2ff] rounded-l-sm shadow-[0_0_10px_rgba(0,242,255,0.4)] animate-pulse" style={{ animationDelay: `${i * 0.15}s` }}></div>
+                  <div key={`lp-${i}`} className="h-2.5 w-6 bg-gradient-to-l from-[#00f2ff]/60 to-transparent border-l border-[#00f2ff] rounded-l-sm shadow-[0_0_10px_rgba(0,242,255,0.4)]" style={{ animation: `pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite ${i * 0.15}s` }}></div>
                 ))}
               </div>
               {/* Right Pins */}
               <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-4 translate-x-full">
                 {[...Array(6)].map((_, i) => (
-                  <div key={`rp-${i}`} className="h-2.5 w-6 bg-gradient-to-r from-[#00f2ff]/60 to-transparent border-r border-[#00f2ff] rounded-r-sm shadow-[0_0_10px_rgba(0,242,255,0.4)] animate-pulse" style={{ animationDelay: `${i * 0.15}s` }}></div>
+                  <div key={`rp-${i}`} className="h-2.5 w-6 bg-gradient-to-r from-[#00f2ff]/60 to-transparent border-r border-[#00f2ff] rounded-r-sm shadow-[0_0_10px_rgba(0,242,255,0.4)]" style={{ animation: `pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite ${i * 0.15}s` }}></div>
                 ))}
               </div>
             </div>
