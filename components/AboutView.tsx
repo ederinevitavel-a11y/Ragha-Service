@@ -79,7 +79,7 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
       icon: '⚰️',
       name: 'The Roost of the Graveborn Quest',
       color: '#00f2ff',
-      price: '350 TC',
+      price: '375 TC',
       requirements: [
         '2kk (Refill)'
       ],
