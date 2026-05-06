@@ -14,7 +14,7 @@ const ORDERS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzql1l7iecYGG
 /**
  * URL do endpoint JSON para verificação de itens a Pronta Entrega (URL atualizada pelo usuário).
  */
-const STOCK_JSON_URL = 'https://script.google.com/macros/s/AKfycbwUEmIic-mBnHExOm1eTa8tT7hTt_RG8Aaa-bpMC-M1x8MpdPUMwdlwFgAs1KfaZhYP/exec';
+const STOCK_JSON_URL = 'https://script.google.com/macros/s/AKfycbx-_bnH_YY7WYA25IPSQHIRhzwB_Wt31OyX-YVU-u3xvuzwlL9AX8IhnuPeqax8G8pL/exec';
 
 /**
  * Envia os dados para o Google Sheets (Formulário de Inscrição / Start Service).
@@ -76,15 +76,23 @@ export const fetchAvailability = async (): Promise<string[]> => {
     
     if (!items || !Array.isArray(items)) return [];
 
-    // Filtra apenas itens com status "Pronta entrega"
+    // Filtra itens disponíveis:
+    // 1. Tem nome de item
+    // 2. Status (Coluna J / Vendido) está VAZIO
     return items
-      .filter((entry: any) => 
-        entry && 
-        entry.item && 
-        entry.status && 
-        entry.status.toString().trim().toLowerCase() === "pronta entrega"
-      )
-      .map((entry: any) => entry.item.toString().toUpperCase().trim());
+      .filter((entry: any) => {
+        if (!entry) return false;
+        
+        const itemName = entry.item || entry.name || entry.itemdrop || entry.item_drop; 
+        const statusValue = (entry.status || entry.vendido || "").toString().trim();
+        
+        // Item disponível = Tem nome e Coluna J (status/vendido) está totalmente vazia
+        return itemName && statusValue === "";
+      })
+      .map((entry: any) => {
+        const itemName = entry.item || entry.name || entry.itemdrop || entry.item_drop;
+        return itemName.toString().toUpperCase().trim();
+      });
         
   } catch (error) {
     console.warn('Ragha Service Stock: Sistema de estoque offline.');

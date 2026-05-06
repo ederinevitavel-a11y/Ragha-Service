@@ -151,6 +151,26 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
         </div>
       </div>
 
+      {/* Quests Grid Header with Payment Highlight */}
+      <div className="mb-12 bg-gradient-to-r from-black via-[#FFD700]/5 to-black border-y md:border border-[#FFD700]/30 p-8 rounded-none md:rounded-[2rem] flex flex-col md:flex-row items-center gap-8 shadow-[0_0_50px_rgba(255,215,0,0.15)] relative overflow-hidden group animate-[fadeIn_0.8s_ease-out]">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+        <div className="relative w-20 h-20 bg-gradient-to-br from-[#FFD700] to-[#B8860B] rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-[0_0_30px_rgba(255,215,0,0.5)] rotate-3 group-hover:rotate-0 transition-transform duration-500">
+          <Coins className="w-12 h-12 text-black animate-pulse" />
+        </div>
+        <div className="relative text-center md:text-left">
+          <div className="inline-block px-3 py-1 bg-[#FFD700] text-black text-[10px] font-gamer font-bold uppercase tracking-widest rounded-full mb-3 shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+            Destaque Premium
+          </div>
+          <h4 className="text-2xl md:text-4xl font-gamer font-black text-white uppercase tracking-tighter mb-2">
+            Pagamento <span className="text-[#FFD700]">Facilitado</span>
+          </h4>
+          <p className="text-gray-300 font-medium text-lg max-w-2xl leading-tight">
+            Oferecemos uma modalidade exclusiva: pague com apenas <span className="text-white font-black text-xl px-2 bg-[#FFD700]/20 rounded border border-[#FFD700]/40 animate-pulse underline decoration-[#FFD700]">50% do Reward Item</span>. 
+            <span className="block mt-1 text-sm text-[#FFD700]/80 font-gamer uppercase tracking-widest">Disponível para TODAS as nossas Quests!</span>
+          </p>
+        </div>
+      </div>
+
       {/* Quests Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {quests.map((quest, idx) => (
@@ -196,15 +216,22 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
               </div>
 
               {/* Price Section */}
-              <div className="bg-black/60 border border-white/10 p-5 rounded-2xl relative overflow-hidden group/price">
-                <div className="absolute top-0 right-0 p-2 opacity-5">
-                   <Coins className="w-12 h-12" />
+              <div className="bg-black/80 border border-[#FFD700]/20 p-6 rounded-3xl relative overflow-hidden group/price shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                <div className="absolute -top-10 -right-10 w-24 h-24 bg-[#FFD700]/10 blur-[40px] pointer-events-none"></div>
+                <div className="flex items-center justify-between gap-3 text-[10px] font-gamer text-gray-500 uppercase tracking-[0.2em] mb-3">
+                   <div className="flex items-center gap-2">
+                     <Coins className="w-4 h-4 text-[#FFD700]" /> Valor do Service
+                   </div>
                 </div>
-                <div className="flex items-center gap-3 text-[10px] font-gamer text-gray-500 uppercase tracking-[0.2em] mb-2">
-                   <Coins className="w-4 h-4" /> Valor do Service
-                </div>
-                <div className="text-3xl font-gamer font-black tracking-tighter transition-all duration-500" style={{ color: quest.color, textShadow: `0 0 15px ${quest.color}66` }}>
+                <div className="text-4xl font-gamer font-black tracking-tighter transition-all duration-500 mb-4" style={{ color: quest.color, textShadow: `0 0 20px ${quest.color}44` }}>
                   {quest.price}
+                </div>
+                
+                <div className="pt-4 border-t border-white/5">
+                  <div className="flex items-center gap-2 py-2 px-3 bg-[#FFD700]/10 border border-[#FFD700]/30 rounded-xl">
+                    <Sparkles className="w-4 h-4 text-[#FFD700] animate-pulse" />
+                    <span className="text-[10px] font-gamer font-black text-[#FFD700] uppercase tracking-[0.1em]">OU 50% DO REWARD ITEM</span>
+                  </div>
                 </div>
               </div>
 
