@@ -325,6 +325,14 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onBack }) => {
                                            {req}
                                          </div>
                                        ))}
+                                       
+                                       {/* Loot Observation */}
+                                       <div className="mt-3 p-2 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start gap-2 text-[10px] text-red-200">
+                                         <AlertCircle className="w-3.5 h-3.5 text-red-400 shrink-0 mt-0.5" />
+                                         <span>
+                                           <strong className="text-red-400 font-bold uppercase tracking-wider text-[9px]">Obs:</strong> O Loot da quest/boss é do time de service Ragha Service.
+                                         </span>
+                                       </div>
                                      </div>
                                    </div>
                                    <div className="bg-white/5 p-3 rounded-xl border border-white/5 space-y-1">

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ChevronLeft, Trophy, FileText, CheckCircle2, Shield, Swords, Sparkles, Coins, MessageSquare } from 'lucide-react';
+import { ChevronLeft, Trophy, FileText, CheckCircle2, Shield, Swords, Sparkles, Coins, MessageSquare, AlertCircle } from 'lucide-react';
 
 interface AboutViewProps {
   onBack: () => void;
@@ -274,6 +274,17 @@ const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
             ></div>
           </div>
         ))}
+      </div>
+
+      {/* General Loot Disclaimer */}
+      <div className="mt-12 bg-gradient-to-r from-red-500/5 via-red-500/10 to-red-500/5 border border-red-500/30 p-6 rounded-3xl flex flex-col md:flex-row items-center justify-center gap-6 shadow-[0_0_40px_rgba(239,68,68,0.08)] max-w-3xl mx-auto animate-[fadeIn_0.8s_ease-out]">
+        <div className="w-14 h-14 bg-red-500/20 border border-red-500/40 rounded-2xl flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+          <AlertCircle className="w-8 h-8 text-red-400 animate-pulse" />
+        </div>
+        <div className="text-center md:text-left">
+          <h4 className="text-lg font-gamer font-bold text-red-400 uppercase tracking-tighter mb-1">Aviso Importante sobre o Loot</h4>
+          <p className="text-gray-300 font-medium">O Loot de todas as quests/bosses é do time de service <span className="text-white font-black underline decoration-red-500">Ragha Service</span>.</p>
+        </div>
       </div>
 
       {/* Final Action Button */}
