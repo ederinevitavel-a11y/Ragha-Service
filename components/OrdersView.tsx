@@ -368,13 +368,25 @@ const OrdersView: React.FC<OrdersViewProps> = ({ onBack }) => {
                     </div>
 
                     {/* Footer Card */}
-                    <div className="p-5 pt-4 border-t border-white/5 mt-auto bg-black/10 flex justify-center">
+                    <div className="p-5 pt-4 border-t border-white/5 mt-auto bg-black/10 flex items-center justify-center gap-2">
                       <button 
                         onClick={() => handleBuyNow(item)}
                         className={`w-full max-w-[160px] py-2.5 ${available ? 'bg-gradient-to-br from-[#39ff14] to-green-600 text-black shadow-[0_0_15px_rgba(57,255,20,0.3)]' : 'bg-gradient-to-br from-blue-600 to-blue-500 text-white'} font-gamer font-bold text-[8px] tracking-widest rounded-lg hover:scale-105 active:scale-95 transition-all uppercase`}
                       >
                         {available ? 'COMPRAR JÁ' : 'SOLICITAR'}
                       </button>
+                      {available && (
+                        <a 
+                          href={`https://wa.me/553592451052?text=Olá!%20Vi%20no%20site%20que%20o%20item%20*${encodeURIComponent(item.name)}*%20está%20disponível%20em%20*Pronta%20Entrega*%20e%20gostaria%20de%20comprar.`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2.5 bg-[#25D366] text-white hover:bg-[#20ba5a] rounded-lg hover:scale-110 active:scale-95 transition-all shadow-[0_0_15px_rgba(37,211,102,0.4)] flex items-center justify-center"
+                          title="Falar no WhatsApp"
+                          id={`wa-btn-${item.id}`}
+                        >
+                          <Phone className="w-4 h-4 fill-white" />
+                        </a>
+                      )}
                     </div>
                   </div>
                 );
